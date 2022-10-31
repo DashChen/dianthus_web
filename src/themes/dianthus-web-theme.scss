@@ -1,0 +1,265 @@
+@use '@angular/material' as mat;
+@use '/src/style-variables.scss' as base;
+
+@include mat.core();
+
+$cuz-primary-palette: (
+    50 : #FDEEEE,
+    100 : rgba(237, 114, 116, 0.12),
+    200 : #F6B9BA,
+    300 : #F29C9E,
+    400 : #F08789,
+    500 : #ED7274,
+    600 : #EB6A6C,
+    700 : #E85F61,
+    800 : #E55557,
+    900 : #E04244,
+    A100 : #FFFFFF,
+    A200 : #FFFFFF,
+    A400 : #FFCCCD,
+    A700 : #FFB2B3,
+    contrast: (
+      50: base.$dark-text-color,
+      100: base.$dark-text-color,
+      200: base.$dark-text-color,
+      300: base.$light-color,
+      400: base.$light-color,
+      500: base.$light-color,
+      600: base.$light-color,
+      700: base.$light-color,
+      800: base.$light-color,
+      900: base.$light-color,
+      A100: base.$gray-text-color,
+      A200: base.$light-color,
+      A400: base.$light-color,
+      A700: base.$light-color,
+    )  
+);
+
+$cuz-accent-palette: (
+    50 : #E5F6F3,
+    100 : #BEE9E0,
+    200 : #92DACC,
+    300 : #66CBB7,
+    400 : #46C0A7,
+    500 : #25B598,
+    600 : #21AE90,
+    700 : #1BA585,
+    800 : #169D7B,
+    900 : #0D8D6A,
+    A100 : #BEFFEB,
+    A200 : #8BFFDB,
+    A400 : #58FFCB,
+    A700 : #3EFFC3,
+    contrast: (
+      50: base.$gray-text-color,
+      100: base.$gray-text-color,
+      200: base.$gray-text-color,
+      300: base.$light-color,
+      400: base.$light-color,
+      500: base.$light-color,
+      600: base.$light-color,
+      700: base.$light-color,
+      800: base.$light-color,
+      900: base.$light-color,
+      A100: base.$gray-text-color,
+      A200: base.$light-color,
+      A400: base.$light-color,
+      A700: base.$light-color,
+    )  
+);
+
+$cuz-warn-palette: (
+    50 : #F8E7E3,
+    100 : #ECC2B9,
+    200 : #E09A8A,
+    300 : #D4725B,
+    400 : #CA5338,
+    500 : #C13515,
+    600 : #BB3012,
+    700 : #B3280F,
+    800 : #AB220C,
+    900 : #9E1606,
+    A100 : #FFCDCA,
+    A200 : #FF9E97,
+    A400 : #FF6E64,
+    A700 : #FF564A,
+    contrast: (
+      50: base.$gray-text-color,
+      100: base.$gray-text-color,
+      200: base.$gray-text-color,
+      300: base.$light-color,
+      400: base.$light-color,
+      500: base.$light-color,
+      600: base.$light-color,
+      700: base.$light-color,
+      800: base.$light-color,
+      900: base.$light-color,
+      A100: base.$gray-text-color,
+      A200: base.$light-color,
+      A400: base.$light-color,
+      A700: base.$light-color,
+    )  
+);
+
+$my-primary: mat.define-palette($cuz-primary-palette, 500, 100, 700);
+$my-secondary: mat.define-palette($cuz-primary-palette, 500, 100, 700);
+$my-accent: mat.define-palette($cuz-accent-palette, 500, 100, A400);
+$my-warn: mat.define-palette($cuz-warn-palette, 500, 100, 700);
+
+$default-theme: mat.define-light-theme((
+ color: (
+   primary: $my-primary,
+   accent: $my-accent,
+   warn: $my-warn
+ )
+));
+
+// Emit theme-dependent styles for common features used across multiple components.
+@include mat.core-theme($default-theme);
+
+@include mat.all-component-themes($default-theme);
+
+/*==================================================
+ ******                Input                  ******
+ ==================================================*/
+@mixin cuz-input-theme() {
+    .mat-form-field-appearance-outline, .mat-form-field-wrapper {
+        margin: 0px !important;
+        .mat-select-arrow-wrapper {
+          transform: none !important;
+          margin-left: 8px;
+        }
+    }
+    .mat-form-field-flex {
+        height: 48px;
+    }
+    .mat-form-field-outline {
+        height: 48px;
+    }
+    .mat-form-field-infix {
+      border-top: 0.54375em solid transparent;
+      width: auto !important;
+      min-width: 80px !important;
+      display: flex !important;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+@include cuz-input-theme();
+/*==================================================
+ ******           Expansion Panel             ******
+ ==================================================*/
+@mixin cuz-expansion-panel-theme {
+  .mat-expansion-panel-body {
+    padding: 16px 32px !important;
+    border-top: 1px solid base.$border-color;
+  }
+  .mat-expansion-panel:not([class*=mat-elevation-z]) {
+    box-shadow: none;
+  }
+  .mat-expansion-panel-spacing {
+    margin: 0 0 !important;
+    margin-bottom: 16px !important;
+  }
+  .mat-expansion-panel-header {
+    height: 60px;
+    padding-left: 16px !important;
+  }
+  .mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:hover:not([aria-disabled=true]) {
+    background-color: rgba(54,54,54, 0.1);
+  }
+  .mat-expansion-panel .mat-expansion-panel-header.cdk-keyboard-focused:not([aria-disabled=true]), .mat-expansion-panel .mat-expansion-panel-header.cdk-program-focused:not([aria-disabled=true]), .mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:hover:not([aria-disabled=true]) {
+    background-color: rgba(54,54,54, 0.1);
+  }
+}
+@include cuz-expansion-panel-theme();
+/*==================================================
+ ******                  Chip                 ******
+ ==================================================*/
+@mixin cuz-chip-theme {
+  .mat-chip {
+    background-color: base.$secondary-color !important;
+    color: base.$dark-text-color !important;
+  }
+  .mat-chip-remove {
+    color: base.$dark-text-color !important;
+    opacity: unset !important;
+  }
+  .mat-chip-list-wrapper {
+    flex-direction: column !important;
+    align-items: flex-start !important; 
+  }
+}
+@include cuz-chip-theme();
+/*==================================================
+ ******               Paginator               ******
+ ==================================================*/
+ @mixin cuz-paginator-theme {
+
+  .mat-paginator {
+    box-shadow: none !important;
+  }
+  .mat-paginator-container{
+    min-height: 42px;
+  }
+  .mat-paginator .mat-paginator-page-size .mat-paginator-page-size-select {
+    margin: 0 0 !important;
+    height: 42px;
+    .mat-form-field-flex {
+      height: auto;
+    }
+    .mat-select-value {
+      text-align: center;
+    }
+  }
+}
+@include cuz-paginator-theme();
+/*==================================================
+ ******               Table                   ******
+ ==================================================*/
+ @mixin cuz-table {
+  .cuz-table {
+    tr.mat-header-row {
+      height: 0px;
+    }
+    .mat-cell:first-of-type, .mat-header-cell:first-of-type {
+      padding-left: 16px !important;
+    }
+  }
+  .mat-table {
+    tr.mat-header-row {
+      max-height: 48px;
+      // height: 0px;
+    }
+    .mat-header-cell {
+      color: base.$gray-text-color;
+      font-weight: 900 !important;
+      font-size: 15px !important;
+    }
+    .mat-row:hover {
+      background-color: #F0F2F2;
+    }
+    .mat-cell {
+      min-height: 48px;
+      font-size: 16px;
+    }
+ 
+    .no-data-cell {
+      height: 200px;
+      text-align: center;
+    }
+  }
+  .mat-paginator {
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.16);
+    .mat-paginator-page-size {
+      align-items: center;
+      .mat-paginator-page-size-select {
+        margin: 12px 4px 0 4px;
+      }
+    }
+  }
+
+}
+@include cuz-table();

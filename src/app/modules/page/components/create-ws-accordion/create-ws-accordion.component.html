@@ -1,0 +1,179 @@
+<mat-accordion>
+    <app-accordion-item (isExpanded)="changeDoctor($event)"
+        [index]="0" title="{{ 'History.seeDoctorInfo' | translate}}" [info]="(doctorInfo$ | async)"
+        [btnContent]="(dBtnContent$ | async)">
+        <form panel [formGroup]="doctorForm" fxLayout="row wrap" fxLayoutGap="16px">
+            <div class="form__column" fxFlex="0 0 181px" fxLayout="column">
+                <label class="form__label">{{'History.clinicDate' | translate}}<span class="form__label__required">{{'general.required' | translate}}</span></label>
+                <mat-form-field appearance="outline">
+                    <input matInput [matDatepicker]="picker" formControlName="clinicDate">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                  </mat-form-field>
+            </div>
+            <div class="form__column" fxFlex="0 0 auto" fxLayout="column">
+                <label class="form__label">{{'History.clinicApn' | translate}}<span class="form__label__required">{{'general.required' | translate}}</span></label>
+                <mat-form-field appearance="outline">
+                    <mat-select formControlName="clinicApn">
+                        <mat-option *ngFor="let period of timePeriods" [value]="period">
+                            {{ 'general.timePeriod.' + period | translate }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="form__column" fxFlex="0 0 auto" fxLayout="column">
+                <label class="form__label">{{'User.areaDept' | translate}}<span class="form__label__required">{{'general.required' | translate}}</span></label>
+                <mat-form-field appearance="outline">
+                    <mat-select formControlName="areaDept">
+                        <mat-option *ngFor="let areaDept of areaDepts" [value]="areaDept">
+                            {{areaDept.label}}
+                          </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="form__column" fxFlex="0 0 328px" fxLayout="column">
+                <label class="form__label">{{'History.doctorInCharge' | translate}}</label>
+                <mat-form-field appearance="outline">
+                    <input matInput type="text" formControlName="doctorNo" />
+                </mat-form-field>
+            </div>
+        </form>
+    </app-accordion-item>
+    <app-accordion-item (isExpanded)="changePatient($event)"
+        [index]="1" title="{{ 'History.patient' | translate}}{{ 'general.data' | translate}}" [info]="(patientInfo$ | async)"
+        [btnContent]="(pBtnContent$ | async)">
+        <form panel [formGroup]="patientForm" fxLayout="column" fxLayoutGap="16px">
+            <div class="form__row ptNO-input" fxLayout="row wrap" fxLayoutGap="16px">
+                <div fxFlex="0 0 328px">
+                    <mat-form-field appearance="outline" fxFlex="0 0 328px">
+                        <input matInput type="text" formControlName="ptNO" placeholder="{{'Message.notify.ptNO' | translate }}"/>
+                        <mat-icon svgIcon="custom-svg:search" class="input__icon" (click)="searchPatient()"></mat-icon>
+                    </mat-form-field>
+                </div>
+                <div fxFlex="0 0 169px">
+                    <label class="ptNO-input__label" fxFlex="0 0 50px"><span class="form__label__required">{{'general.required' | translate}}</span></label>
+                </div>
+            </div>
+            <div class="page__subtitle">{{ 'general.baseInfo' | translate }}</div>
+            <div class="form__row" fxLayout="row wrap" fxLayoutGap="16px">
+                <div class="form__column" fxFlex="0 0 169px" fxLayout="column">
+                    <label class="form__label">{{'general.name' | translate}}</label>
+                    <mat-form-field appearance="outline">
+                        <input matInput type="text" formControlName="ptName">
+                      </mat-form-field>
+                </div>
+                <div class="form__column" fxFlex="0 0 auto" fxLayout="column">
+                    <label class="form__label">{{'general.gender' | translate}}</label>
+                    <mat-form-field appearance="outline">
+                        <mat-select formControlName="ptGender">
+                            <mat-option *ngFor="let gender of genders" [value]="gender">
+                                {{ 'general.genderType.' + gender | translate }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="form__column" fxFlex="0 0 181px" fxLayout="column">
+                    <label class="form__label">{{'general.birthDate' | translate}}</label>
+                    <mat-form-field appearance="outline">
+                        <input matInput [matDatepicker]="birthPicker" formControlName="ptBirth">
+                        <mat-datepicker-toggle matSuffix [for]="birthPicker"></mat-datepicker-toggle>
+                        <mat-datepicker #birthPicker></mat-datepicker>
+                      </mat-form-field>
+                </div>
+                <div class="form__column" fxFlex="0 0 169px" fxLayout="column">
+                    <label class="form__label">{{'general.pid' | translate}}</label>
+                    <mat-form-field appearance="outline">
+                        <input matInput type="text"  formControlName="ptIDNO">
+                      </mat-form-field>
+                </div>
+                <div class="form__column" fxFlex="0 0 auto" fxLayout="column">
+                    <label class="form__label">{{'general.blood' | translate}}</label>
+                    <mat-form-field appearance="outline">
+                        <mat-select formControlName="ptBlood">
+                            <mat-option *ngFor="let blood of bloods" [value]="blood">
+                                {{ 'general.bloodType.' + blood | translate }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="form__row" fxLayout="row wrap" fxLayoutGap="16px">
+                <div class="form__column" fxFlex="0 0 169px" fxLayout="column">
+                    <label class="form__label">{{'general.telephone' | translate}}</label>
+                    <mat-form-field appearance="outline">
+                        <input matInput type="text"  formControlName="ptContractNum">
+                      </mat-form-field>
+                </div>
+                <div class="form__column" fxFlex="0 0 680px" fxLayout="column">
+                    <label class="form__label">{{'general.address' | translate}}</label>
+                    <mat-form-field appearance="outline">
+                        <input matInput type="text"  formControlName="ptAddress">
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="page__subtitle">{{ 'general.contactPerson' | translate }}</div>
+            <div class="form__row" fxLayout="row wrap" fxLayoutGap="8px" fxLayoutAlign="flex-start center">
+                <div>#1</div>
+                <div fxFlex="0 0 108px">
+                    <mat-form-field appearance="outline">
+                        <input matInput type="text"  formControlName="contractName1">
+                    </mat-form-field>
+                </div>
+                <div fxFlex="0 0 150px">
+                    <mat-form-field appearance="outline">
+                        <input matInput type="text"  formControlName="contractNum1">
+                    </mat-form-field>
+                </div>
+                <div fxFlex="0 0 115px">
+                    <mat-form-field appearance="outline">
+                        <input matInput type="text"  formControlName="contractRela1">
+                    </mat-form-field>
+                </div>
+            </div>
+        </form>
+    </app-accordion-item>
+    <app-accordion-item (isExpanded)="changeAgreement($event)"
+        [index]="2" title="{{ 'general.choose' | translate}}{{ 'History.agreement' | translate}}" [info]="(agreement$ | async)"
+        [btnContent]="( aBtnContent$ | async)">
+        <mat-chip-list header>
+            <mat-chip *ngFor="let selectItem of selection.selected; let i = index" color="primary">
+                {{i +1}}.&nbsp;{{selectItem.templateName}}
+            <button matChipRemove (click)="removeAgreement(selectItem)">
+                <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip>
+        </mat-chip-list>
+        <form panel [formGroup]="agreementForm" fxLayout="column" fxLayoutGap="0px">
+            <div fxFlex="0 0 auto" fxLayout="row">
+                <mat-form-field appearance="outline" fxFlex="0 0 402px">
+                    <mat-label>{{'User.areaDept' | translate}}</mat-label>
+                    <mat-select formControlName="areaDept" (selectionChange)="changeAreaDept()">
+                        <mat-option *ngFor="let areaDept of areaDepts" [value]="areaDept.value">
+                            {{areaDept.label}}
+                            </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </form>
+        <app-table panel class="cuz-table" [dataList]="agreemetList$ | async" [displayedColumns]="displayedColumns"
+            [total]="agreemetTotal$ | async" (pageChange)="changePage($event)">
+
+            <ng-container matColumnDef="select">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let element">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(element) : null"
+                    [checked]="selection.isSelected(element)" color="primary">
+                    <div class="checkbox__info">{{element.templateName}}</div>
+                    </mat-checkbox>
+                </td>
+            </ng-container>
+
+            <!-- <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let element">
+                    {{element.templateName}}
+                </td>
+            </ng-container> -->
+      </app-table>
+    </app-accordion-item>
+</mat-accordion>

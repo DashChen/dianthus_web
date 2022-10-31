@@ -1,0 +1,18 @@
+<div class="page" fxLayout="column">
+    <div class="page__title">同意書起單</div>
+    
+    <app-create-ws-accordion *ngIf="showResult === false" (emitDoctorForm)="saveSelectedDoctor($event)" (emitPatientForm)="saveSelectedPatient($event)"
+        (emitAgreementForm)="saveSelectedAgreements($event)"></app-create-ws-accordion>
+
+    <app-create-ws-result *ngIf="showResult === true" [agreements]="selectedAgreements" (sEditorAgreement)="saveOpenAgreements($event)"></app-create-ws-result>
+
+    <div class="page__footer">
+        <div class="page__footer__container" fxLayout="row" fxLayoutAlign="flex-end center">
+            <button mat-flat-button color="primary" class="page__footer__btn" (click)="createMultiWs()"
+            *ngIf="showResult === false">{{'1zSIGN.createWs' | translate}}</button>
+            <button mat-flat-button color="accent" class="page__footer__btn" (click)="openMultiEditor()" [disabled]="canOpenMultiEditor"
+            *ngIf="showResult === true">{{'1zSIGN.openMultiEditor' | translate}}</button>
+        </div>
+    </div>
+</div>
+

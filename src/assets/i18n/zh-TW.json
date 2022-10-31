@@ -1,0 +1,234 @@
+{
+  "general": {
+    "account": "帳號",
+    "accountInfo": "個人資訊",
+    "add": "新增",
+    "address": "地址",
+    "allSelect": "全選",
+    "backToLogin": "回到登入頁面",
+    "baseInfo": "基本資料",
+    "birthDate": "出生日期",
+    "blood": "血型",
+    "bloodType": {
+      "0" : "未知",
+      "1" : "A",
+      "2" : "B",
+      "3" : "O",
+      "4" : "AB",
+      "5" : "O-",
+      "6" : "A-",
+      "7" : "B-",
+      "8" : "AB-"
+    },
+    "cancel": "取消",
+    "close": "關閉",
+    "complete": "完成",
+    "choose": "選擇",
+    "choosed": "<strong>已選擇</strong>",
+    "confirm": "確認",
+    "confirmPassword": "確認密碼",
+    "contactPerson": "聯絡人",
+    "createDate": "建立日期",
+    "createTime": "建立時間",
+    "data": "資料",
+    "day": "天",
+    "delete": "刪除",
+    "deleteAll": "全部刪除",
+    "detail": "詳細資料",
+    "disconnected": "斷線",
+    "description": "描述",
+    "doNotClose": "請勿關閉",
+    "download": "下載",
+    "ea": "次",
+    "edit": "修改",
+    "enable": "啟用",
+    "enableDate": "啟用日期",
+    "email": "信箱",
+    "errorCode": "錯誤代碼",
+    "errorMsg": "錯誤訊息",
+    "expireTime": "到期時間",
+    "export": "匯出",
+    "external": "進階",
+    "firstPage": "第一頁",
+    "fileName": "檔案名稱",
+    "forbidden": "無權限",
+    "forever": "永久",
+    "home": "首頁",
+    "gender": "性別",
+    "genderType": {
+      "0": "男",
+      "1": "女"
+    },
+    "ip": "位址",
+    "import": "匯入",
+    "info": "資訊",
+    "input": "請輸入",
+    "keyName": "金鑰名稱",
+    "lastPage": "最後一頁",
+    "lastRefreshDate": "上次更新日期",
+    "lastUpdateTime": "上次修改時間",
+    "length": "長度",
+    "login": "登入",
+    "logging": "登入中",
+    "loginFail": "登入失敗",
+    "logout": "登出",
+    "max": "最大值限制",
+    "maxLength": "最大長度限制",
+    "min": "最小值限制",
+    "minLength": "最小長度限制",
+    "name": "姓名",
+    "nextPage": "下一頁",
+    "nextStep": "下一步",
+    "no": "否",
+    "noData": "沒有任何資料可供顯示",
+    "noErrorCode": "無錯誤代碼",
+    "noErrorMsg": "無錯誤訊息",
+    "notChooseFile": "未選擇檔案",
+    "notSet": "尚未設定",
+    "millis": "毫秒",
+    "onlyNumber": "只允許輸入數字",
+    "operation": "操作",
+    "password": "密碼",
+    "pageCount": "第 {{startIndex}} - {{endIndex}} 筆、共 {{total}} 筆",
+    "pc": "筆",
+    "pid": "身份證字號",
+    "perPage": "每頁筆數",
+    "permission": "權限",
+    "phone": "手機",
+    "previousPage": "上一頁",
+    "previousStep": "上一步",
+    "reChoose": "重新選擇",
+    "search": "搜尋",
+    "searchResult": "查詢結果",
+    "size": "大小",
+    "serving": "份",
+    "status": "狀態",
+    "suggest": "建議",
+    "suspendDate": "停用日期",
+    "sync": "同步",
+    "syncDate": "同步日期",
+    "systemError": "系統發生錯誤",
+    "result": "結果",
+    "telephone": "市話(聯繫方式)",
+    "times": "次",
+    "timePeriod": {
+      "0": "不拘",
+      "1": "早上",
+      "2": "下午",
+      "3": "晚上"
+    },
+    "token": "Token",
+    "type": "類型",
+    "unauthorized": "未授權",
+    "unauthorizedAlert": "即將導回登入頁面，倒數 {{sec}} 秒",
+    "unconnect": "無法連線",
+    "unit": "單位",
+    "welcome": "歡迎",
+    "year": "年",
+    "yes": "是",
+    "required": "*必填"
+  },
+  "User": {
+    "areaDept": "院區與科別",
+    "employeeId": "員工編號"
+  },
+  "History": {
+    "agreement": "同意書",
+    "clinicDate": "看診日期",
+    "clinicApn": "班別",
+    "doctorInCharge": "負責醫師",
+    "patient": "病患",
+    "seeDoctorInfo": "看診資料",
+    "noDoctor": "尚未選擇負責醫師",
+    "noPatient": "尚未帶入病患資料",
+    "noAgreement": "<span class='{{msgType}}'>尚未選擇同意書</span>",
+    "choosePatient": "帶入病患資料",
+    "reChoose": "重新帶入",
+    "selectedAgreement": "已選擇<div class='primary-text'>{{amount}}</div>份同意書",
+    "ptNO": "病歷號"
+  },
+  "1zSIGN": {
+    "createWs": "起單",
+    "createWsStatus": {
+      "0": "起單中，請稍後",
+      "1": "開啟表單",
+      "2": "再試一次"
+    },
+    "finishWsStatus": {
+      "0": "進行核准中，請稍後...",
+      "1": "核准成功",
+      "2": "核准失敗!錯誤訊息{{errorMsg}}",
+      "3": "核准皆已完成，{{success}}筆成功, {{error}}筆失敗"
+    },
+    "openMultiEditor": "批次開啟表單",
+    "waitSign": "待{{signRole}}簽署",
+    "finish": "核准",
+    "multiFinish": "批次核准",
+    "signStatus": {
+      "1": "尚未簽署",
+      "2": "簽署中",
+      "3": "簽署完成",
+      "4": "無簽名框"
+    },
+    "status": {
+      "-1": "不拘",
+      "0": "正常",
+      "1": "已核准",
+      "2": "已廢止",
+      "3": "待歸檔",
+      "4": "已歸檔",
+      "9": "已刪除"
+    },
+    "templateName": "範本名稱"
+
+  },
+  "Error": {
+    "serverError": "Server 連線異常可能原因",
+    "network":{
+      "reason": "網路發生異常",
+      "suggest": "請先確認網路是否有正常連線"
+    },
+    "server":{
+      "reason": "伺服器發生異常",
+      "suggest": "請先利用各伺服器的管理網頁確認伺服器是否有正常運作"
+    }
+  },
+  "Message": {
+    "notify": {
+      "account": "請輸入帳號",
+      "password": "請輸入密碼",
+      "confirmPassword": "請再次輸入密碼",
+      "name": "請輸入姓名",
+      "noChange": "無須異動",
+      "email": "請輸入Email",
+      "ptNO": "請輸入病歷號",
+      "clinicDateStart": "請選擇看診日期查詢起始日",
+      "clinicDateEnd": "請選擇看診日期查詢結束日"
+    },
+    "success": {
+
+    },
+    "error": {
+      "template": "<span class='text--warn'>{{msg}}</span",
+      "noErrorMsg": "無可用的錯誤訊息，請聯絡系統管理員",
+      "serverErrorMsg": "伺服器發生不預期錯誤，請聯絡系統管理員",
+      "login": "登入失敗",
+      "Agreement": {
+        "list": "取得同意書清單有誤，{{errorMsg}}"
+      },
+      "SignSearch": {
+        "list": "取得簽署清單有誤，{{errorMsg}}"
+      },
+      "createWs": {
+        "fail": "起單失敗",
+        "requiredNotFill": "仍有必填未填",
+        "requiredDoctorInfo1": "請輸入看診資料",
+        "requiredDoctorInfo2": "<span class='text--warn'>，仍有必填未填</span>",
+        "requiredPatientInfo": "請輸入病患資料",
+        "requiredAgreement": "請選擇同意書",
+        "patientData": "查詢病患資料失敗"
+      },
+      "timeout": "離開系統過久，已登出"
+    }
+  }
+}

@@ -1,0 +1,67 @@
+@use '/src/style-variables.scss' as base;
+.wrapper {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: base.$background-color;
+
+}
+.header {
+    width: 100%;
+    height: 80px;
+    background-color: base.$light-color;
+    box-shadow: 0px 3px 6px base.$shadow-color;
+
+    @media(base.define-rwd(base.$desktop-var, media)) {
+      padding: base.define-rwd(base.$desktop-var, header, wrapperPadding);
+    }
+    @media(base.define-rwd(base.$laptop-var, media)) {
+      padding: base.define-rwd(base.$laptop-var, header, wrapperPadding);
+    }
+
+    z-index: 2;
+    &__img{
+        cursor: pointer;
+    }
+
+    &__info {
+        font-size: 20px;
+        font-weight: bold;
+        color: base.$gray-text-color;
+    }
+
+    &__dropdown {
+        font-size: 20px;
+        font-weight: bold;
+        color: base.$gray-text-color;
+    }
+}
+.cdk-overlay-pane:has(.menu) {
+    position: absolute !important;
+    left: -60px;
+}
+.menu {
+    width: 249px;
+    word-wrap: break-word;
+    position: absolute;
+    left: -100px;
+
+    &__item {
+        margin-top: 12px;
+        padding: 0px 16px;
+        color: base.$gray-text-color;
+        &__value {
+            font-weight: bold;
+        }
+        &__btn {
+            width: 100%;
+            color: base.$primaty-color;
+        }
+    }
+}
+.container {
+    //padding: base.$wrapperPadding;
+    height: calc(100vh - 80px);
+}

@@ -1,0 +1,23 @@
+
+<div class="accordion" fxLayout="row wrap" fxLayoutAlign="space-between center" [tabIndex]="index"
+    [ngClass]="{'accordion--expaned': isExpandedStatus, 'accordion--collapsed': !isExpandedStatus}">
+    <div class="accordion__header" fxLayout="row wrap" fxLayoutAlign="stretch center" fxLayoutGap="8px">
+        <div fxFlex="0 0 200px" class="accordion__title">
+            <span></span>
+            {{title}}
+        </div>
+        <div fxFlex="1 0 168px" class="accordion__info" [innerHTML]="info">
+            <!-- {{info}} -->
+        </div>
+        <div>
+            <ng-content select="[header]"></ng-content>
+        </div>
+    </div>
+    <button mat-stroked-button class="accordion__btn" (click)="sure()"
+        [ngClass]="{'accordion__btn--expaned': isExpandedStatus, 'accordion__btn--collapsed': !isExpandedStatus}">
+        {{btnContent}}
+    </button>
+</div>
+<mat-expansion-panel [expanded]="isExpandedStatus" [hideToggle]="hideToggle" (afterCollapse)="changeStatus()">
+    <ng-content select="[panel]"></ng-content>
+</mat-expansion-panel>

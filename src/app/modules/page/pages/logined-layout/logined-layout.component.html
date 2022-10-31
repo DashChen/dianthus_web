@@ -1,0 +1,35 @@
+<div class="wrapper" fxLayout="column" fxLayoutAlign="stretch">
+    <div class="header" fxLayout="row" fxLayoutAlign="space-between center">
+        <img class="header__img" src="assets/images/brand-logo.png" width="370px" routerLink="/page/home">
+        <div fxFlex="1 1 148px" fxLayout="row" fxLayoutAlign="flex-end center">
+            <button mat-flat-button class="header__dropdown" [matMenuTriggerFor]="menu" data-cy="settingMenuToggle">
+                {{loginUserName}}
+                <img src="assets/images/ic_expand_more_24px.png" width="12px">
+            </button>
+            <mat-menu #menu="matMenu" class="menu" xPosition="before">
+                <div class="menu__item" fxLayout="row" fxLayoutAlign="stretch baseline" fxLayoutGap="8px">
+                    <img src="assets/images/list-icon.png" width="10px" height="10px">
+                    <div fxLayout="column" fxLayoutAlign="stretch stretch">
+                        <div>{{ 'User.areaDept' | translate}} :</div>
+                        <div class="menu__item__value" data-cy="userAreaDept">{{areaDept}}</div>
+                    </div>
+                </div>
+                <div class="menu__item" fxLayout="row" fxLayoutAlign="stretch baseline" fxLayoutGap="8px">
+                    <img src="assets/images/list-icon.png" width="10px" height="10px">
+                    <div fxLayout="row" fxLayoutAlign="stretch stretch">
+                        <div>{{ 'User.employeeId' | translate}} :</div>
+                        <div class="menu__item__value" data-cy="userEmployeeId">{{employeeId}}</div>
+                    </div>
+                </div>
+                <div class="menu__item" fxLayout="row" fxLayoutAlign="stretch baseline" fxLayoutGap="8px">
+                    <button type="button" mat-stroked-button class="menu__item__btn" (click)="logout()" data-cy="logoutBtn">
+                        {{ 'general.logout' | translate}}
+                    </button>
+                </div>
+            </mat-menu>
+        </div>
+    </div>
+    <div class="container">
+        <router-outlet></router-outlet>
+    </div>
+</div>

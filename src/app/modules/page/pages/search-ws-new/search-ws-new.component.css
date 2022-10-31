@@ -1,0 +1,61 @@
+.mat-expansion-panel {
+  margin-bottom: 10px !important;
+  /*border:1px solid #000;*/
+}
+
+#table1 td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  font-size: medium;
+}
+
+.mat-column-action {
+  text-align: end;
+  font-weight: bold;
+}
+
+.text__icon {
+  height: 16px;
+  width: 16px;
+  margin-left: 4.23px;
+}
+
+.ptName {
+  font-size: 14px;
+  font-weight: bold;
+  width: 150px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.ptIDNO {
+  font-size: 12px;
+}
+
+.mat-column-select {
+  width: 60px;
+}
+
+.mat-column-name {
+  width: 400px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.mat-column-ptNo {
+  width: 140px;
+}
+
+.mat-column-ptInfo {
+  width: 170px;
+}
+
+.mat-column-createTime {
+  width: 249px;
+}
+
+.mat-column-status {
+  width: 100px;
+}

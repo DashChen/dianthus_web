@@ -1,0 +1,32 @@
+@use '/src/style-variables.scss' as base;
+.login {
+    @include base.base-login;
+    &__card {
+        @include base.base-card;
+
+        &__form {
+            margin-top: 35px !important;
+        }
+    }
+}
+
+.form {
+    &__row {
+        min-width: 328px;
+    }
+    &__input {
+        width: 100%;
+    }
+    &__btn {
+        background: base.$primaty-color 0% 0% no-repeat padding-box;
+        border-radius: 4px;
+        color: base.$light-color;
+        width: 201px;
+        height: 48px;
+
+        &--disabled {
+            background-color: base.$disabled-color;
+            color: base.$disabled-text-color;
+        }
+    }
+}

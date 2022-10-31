@@ -1,0 +1,43 @@
+<div mat-dialog-title fxLayout="row" fxLayoutAlign="stretch center">
+    <mat-icon svgIcon="custom-svg:finish" class="dialog-title__icon"></mat-icon>
+    {{'1zSIGN.finish' | translate}}
+</div>
+<div mat-dialog-content fxLayout="column" fxLayoutGap="16px">
+    <div>
+        {{'1zSIGN.finishWsStatus.' + allState | translate:{success: successFinishWs, error: errorFinishWs} }}
+    </div>
+    <app-table class="cuz-table" [dataList]="workstages" [displayedColumns]="displayedColumns" [total]="workstages.length">
+
+        <ng-container matColumnDef="index">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element; let i = index">
+                #{{i + 1}}
+            </td>
+        </ng-container>
+    
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element">
+                {{element.templateName}}
+            </td>
+        </ng-container>
+    
+        <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element" [ngClass]="{'text-accent': element.status === PROCESS_STATE.SUCCESS,
+                                                               'text--warn' : element.status === PROCESS_STATE.ERROR }">
+                {{'1zSIGN.finishWsStatus.' + element.status | translate: {errorMsg: element.errorMsg} }}
+            </td>
+        </ng-container>
+    </app-table>
+</div>
+<div mat-dialog-actions fxLayout="row" fxLayoutAlign="center">
+    <button mat-button [disabled]="allState !== PROCESS_STATE.END" (click)="close()">
+        <ng-container *ngIf="allState !== PROCESS_STATE.END">
+            {{'general.doNotClose' | translate}}
+        </ng-container>
+        <ng-container *ngIf="allState === PROCESS_STATE.END">
+            {{'general.close' | translate}}
+        </ng-container>
+    </button>
+</div>

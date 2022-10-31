@@ -1,0 +1,18 @@
+@use '/src/style-variables.scss' as base;
+.create-ws-error {
+  &__title {
+    color: base.$danger-color;
+    font-weight: bold;
+    padding-bottom: 8px;
+  }
+  &__msglist {
+    padding-inline-start: 0px;
+    margin-block-start: 0px;
+    font-size: 16px;
+    width: 90%;
+    word-break: break-word;
+    .msglist__item:not(:first-child) {
+      margin-top: 8px;
+    }
+  }
+}

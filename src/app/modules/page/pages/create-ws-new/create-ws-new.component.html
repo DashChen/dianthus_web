@@ -1,0 +1,241 @@
+
+<div class="page" fxLayout="column">
+  <div class="page__title">同意書起單</div>
+
+  <mat-accordion multi="true" *ngIf="showResult !== true">
+    <mat-expansion-panel (opened)="panelOpenState1 = true" (closed)="panelOpenState1 = false" [expanded]="panelOpenState1">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <span style="display:inline-block;font-size:large;font-weight:bold;margin:5px;border-left:3px solid #f69999">&nbsp;輸入查找看診資料條件</span>
+        </mat-panel-title>
+        <mat-panel-description>
+          <span *ngIf="!clinicData.medicalRecordsNo" style="font-size:small;color:red">尚未帶入病患資料，請輸入病歷號</span>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <div>
+        <div style="display:inline-block;padding:5px;vertical-align:top">
+          <span>病歷號碼</span>&nbsp;<span style="font-size:small;color:red">*必填</span>
+          <br />
+          <input [(ngModel)]="pid" style="width:180px;height:28px;font-size:medium" />
+        </div>
+        <div style="display:inline-block;padding:5px;vertical-align:top">
+          <span>看診日期</span>&nbsp;<span style="font-size:small;color:red">*必填</span>
+          <br />
+          <input [(ngModel)]="date1" type="date" style="width: 180px; height: 28px; font-size: large" />
+        </div>
+        <div style="display:inline-block;padding:5px;vertical-align:top">
+          <button (click)="getClinicData()" mat-raised-button color="primary" style="width: 80px; margin-top: 13px">查詢</button>
+        </div>
+
+        <br />
+      </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel (opened)="panelOpenState2 = true" (closed)="panelOpenState2 = false" [expanded]="panelOpenState2">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <span style="display:inline-block;font-size:large;font-weight:bold;margin:5px;border-left:3px solid #f69999">&nbsp;病患基本資料</span>
+        </mat-panel-title>
+        <mat-panel-description>
+
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <div *ngIf="clinicData.medicalRecordsNo">
+        <div style="display:inline-block;padding:5px 10px 5px 0;vertical-align:top">
+          &nbsp;<span style="font-weight: bold; color: #999; display: inline-block; padding-bottom: 10px; width: 150px">病歷號碼</span>
+          <br />
+          &nbsp;&nbsp;<span style="font-size:medium">{{clinicData.medicalRecordsNo}}</span>
+          <br />
+        </div>
+        <div style="display:inline-block;padding:5px 10px 5px 0;vertical-align:top">
+          <span style="font-weight: bold; color: #999; display: inline-block; padding-bottom: 10px; width: 150px ">姓名</span>
+          <br />
+          <span style="font-size:medium">{{clinicData.patient}}</span>
+          <br />
+
+        </div>
+        <div style="display:inline-block;padding:5px 10px 5px 0;vertical-align:top">
+          <span style="font-weight: bold; color: #999; display: inline-block; padding-bottom: 10px; width: 150px ">身分證字號</span>
+          <br />
+          <span style="font-size:medium">{{clinicData.patientId}}</span>
+          <br />
+        </div>
+        <div style="display:inline-block;padding:5px 10px 5px 0;vertical-align:top">
+          <span style="font-weight: bold; color: #999; display: inline-block; padding-bottom: 10px; width: 150px ">電話</span>
+          <br />
+          <span style="font-size:medium">{{clinicData.patientPhone}}</span>
+          <br />
+        </div>
+        <div style="display:inline-block;padding:5px 10px 5px 0;vertical-align:top">
+          <span style="font-weight: bold; color: #999; display: inline-block; padding-bottom: 10px; width: 150px ">生日</span>
+          <br />
+          <span style="font-size:medium">{{patient.birth | date:'yyyy/MM/dd'}}</span>
+          <br />
+        </div>
+        <div style="display:inline-block;padding:5px 10px 5px 0;vertical-align:top">
+          <span style="font-weight: bold; color: #999; display: inline-block; padding-bottom: 10px; width: 150px ">性別</span>
+          <br />
+          <span style="font-size:medium">{{patient.sex}}</span>
+          <br />
+        </div>
+        <br />
+      </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel (opened)="panelOpenState3 = true" (closed)="panelOpenState3 = false" [expanded]="panelOpenState3">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <span style="display:inline-block;font-size:large;font-weight:bold;margin:5px;border-left:3px solid #f69999">&nbsp;看診資料</span>
+        </mat-panel-title>
+        <mat-panel-description>
+
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <div *ngIf=" clinicData.clinicList && clinicData.clinicList.length > 0 ">
+        <table id="table1" style="width:100%;text-align:center">
+          <tr>
+            <td>單選</td>
+            <td>看診日期</td>
+            <td>班別</td>
+            <td>院所及科別</td>
+            <td>診別</td>
+            <td>負責醫生</td>
+          </tr>
+          <tr *ngFor="let item of clinicData.clinicList; let i = index">
+            <td><mat-checkbox (change)="checked(i)" [(ngModel)]="item.checked"></mat-checkbox></td>
+            <td>{{item.executionDate}}</td>
+            <td>{{item.shift}}</td>
+            <td>{{item.areaDept}}/{{item.clinicName}}</td>
+            <td>{{item.diagnosis}}</td>
+            <td>
+              <ng-select2 style="font-size:medium;padding:3px 5px;margin-right:15px;font-size:large;"
+                          [data]="_doctorList"
+                          [placeholder]="'請選擇醫生'"
+                          [(ngModel)]="item.doctorName"
+                          [options]="options">
+              </ng-select2>
+            </td>
+          </tr>
+        </table>
+        <br />
+      </div>
+      <div *ngIf=" !clinicData.clinicList || clinicData.clinicList.length == 0 ">
+        <div>
+          <div style="display:inline-block;padding:5px;vertical-align:top">
+            <span>班別</span>
+            <br />
+            <select [(ngModel)]="choiceClass" style="font-size:medium;width:180px;padding:2px 5px;">
+              <option value="0">不拘</option>
+              <option value="1">早班</option>
+              <option value="2">中班</option>
+              <option value="3">午班</option>
+              <option value="4">晚班</option>
+              <option value="5">夜班</option>
+            </select>
+          </div>
+          <div style="display:inline-block;padding:5px;vertical-align:top">
+            <span>負責醫生</span>&nbsp;<span style="font-size:small;color:red">*必填</span>
+            <br />
+            <ng-select2 style="font-size:medium;padding:3px 5px;margin-right:15px;font-size:large;"
+                        [data]="_doctorList2"
+                        [placeholder]="'請選擇醫生'"
+                        [(ngModel)]="choiceDoctor"
+                        [options]="options">
+            </ng-select2>
+          </div>
+          <br />
+        </div>
+      </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel (opened)="panelOpenState4 = true" (closed)="panelOpenState4 = false" [expanded]="panelOpenState4">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <span style="display:inline-block;font-size:large;font-weight:bold;margin:5px;border-left:3px solid #f69999">&nbsp;選擇同意書</span>
+        </mat-panel-title>
+        <mat-panel-description>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <div>
+        <div style="padding: 10px 0px;display:inline-block">
+          <span>院所及科別</span>&nbsp;<span style="font-size:small;color:red">*必填</span>
+          <br />
+          <ng-select2 style="font-size:medium;width:300px;padding:3px 5px;margin-right:15px;font-size:large"
+                      [data]="_areaDeptList"
+                      [placeholder]="'請選擇院所 / 科別'"
+                      [(ngModel)]="choiceHospital"
+                      [options]="options">
+          </ng-select2>
+        </div>
+        <div style="padding:5px;display:inline-block">
+          <div *ngFor="let item of consentList; let i=index" style="display: inline-block;">
+            <div *ngIf="item.checked">
+              <span style="display:inline-block;padding:3px 10px;margin:5px;background-color:#f6c2c2;border-radius:10px;font-weight:bold;font-size:medium">
+                {{i+1}}.&nbsp;{{item.templateName}} &nbsp;&nbsp;
+                <button (click)="clearConsent(i)" mat-icon-button style="margin:0">
+                  <mat-icon style="font-size:medium">clear</mat-icon>
+                </button>
+              </span>
+            </div>
+          </div>
+        </div>
+        <br />
+        <div>
+
+          <table id="table2" style="width: 100%; font-size: medium">
+            <tr>
+              <td style="width:10%;text-align:center;"><mat-checkbox [(ngModel)]="isAllChoice" (change)="changeAllChoice()"></mat-checkbox></td>
+              <td style="width:90%">
+                <div>
+                  <span *ngFor="let item of tagList ">
+                    <mat-checkbox [(ngModel)]="item.checked">{{item.tagName}}</mat-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;
+                  </span>
+                  <input [(ngModel)]="consentKey" style="font-size: medium; min-width: 380px; padding: 3px 5px; margin-right: 8px; font-size: medium; width: calc(100%-400px) !important" placeholder="同意書模糊搜尋" />
+                  <button (click)="searchConsentList()" mat-raised-button color="primary" style="width: 80px;">搜尋</button>
+                </div>
+               
+              </td>
+            </tr>
+            <tr *ngFor="let item of _consentList; let i = index">
+              <td style="width:10%;text-align:center"><mat-checkbox [(ngModel)]="item.checked"></mat-checkbox></td>
+              <td style="width:90%">{{item.templateName}}</td>
+            </tr>
+            <tr>
+              <td style="width:10%;text-align:center;border:0"></td>
+              <td style="width: 90%; border: 0;text-align:right;font-size:small">
+                <span>每頁筆數</span>
+                &nbsp;
+                <select [(ngModel)]="pageSize" (change)="changeSize()" style="border:0;border-bottom:1px solid #333;width:50px">
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="30">30</option>
+                  <option value="50">50</option>
+                </select>
+                &nbsp;
+                <span>第 {{x}} - {{y}} 筆、共 {{consentList.length}} 筆</span>
+                &nbsp;
+                <button (click)="changeIndex(0)" [disabled]="this.pageIndex <= 0" mat-icon-button><mat-icon>first_page</mat-icon></button>
+                <button (click)="changeIndex(this.pageIndex-1)" [disabled]="this.pageIndex <= 0" mat-icon-button><mat-icon>chevron_left</mat-icon></button>
+                <button (click)="changeIndex(this.pageIndex+1)" [disabled]="this.pageIndex >= (this.pageLast-1)" mat-icon-button><mat-icon>chevron_right</mat-icon></button>
+                <button (click)="changeIndex(this.pageLast-1)" [disabled]="this.pageIndex >= (this.pageLast-1)" mat-icon-button><mat-icon>last_page</mat-icon></button>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+</mat-expansion-panel>
+  </mat-accordion>
+
+  <app-create-ws-result *ngIf="showResult === true" [agreements]="selectedAgreements" (sEditorAgreement)="saveOpenAgreements($event)"></app-create-ws-result>
+
+  <div class="page__footer">
+    <div class="page__footer__container" fxLayout="row" fxLayoutAlign="flex-end center">
+      <button mat-flat-button color="primary" class="page__footer__btn" (click)="createMultiWs()"
+              *ngIf="showResult === false">
+        {{'1zSIGN.createWs' | translate}}
+      </button>
+      <button mat-flat-button color="accent" class="page__footer__btn" (click)="openMultiEditor()" [disabled]="canOpenMultiEditor"
+              *ngIf="showResult === true">
+        {{'1zSIGN.openMultiEditor' | translate}}
+      </button>
+    </div>
+  </div>
+
+</div>

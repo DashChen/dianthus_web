@@ -1,0 +1,5 @@
+<div class="home" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="70px">
+    <div fxFlex="1 1 180px" class="home__item" *ngFor="let item of menuItems" [routerLink]="item.router">
+        <img [src]="item.img" width="170px" [attr.data-cy]="item.id+'-img'">
+    </div>
+</div>

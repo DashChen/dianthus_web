@@ -1,0 +1,18 @@
+@use '/src/style-variables.scss' as base;
+.home {
+    padding-top: 113px;
+
+    &__item {
+        padding: 5px;
+        height: 180px;
+        background-color: #ffffff;
+        border: 1.5px solid #585352;
+        border-radius: 4px;
+        cursor: pointer;
+
+        &:hover {
+            border-color: base.$primaty-color;
+        }
+    }
+    
+}

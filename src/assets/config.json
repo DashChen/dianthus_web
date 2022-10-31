@@ -1,0 +1,121 @@
+{
+  "coreUrl": "http://114.34.9.167:8088/dianthus-core",
+  "1zSIGNUrl": "http://220.135.181.86:6780/docform_core",
+  "1zSIGNEditorUrl": "http://220.135.181.86:6780/1zsign-weditor/#",
+  "apNameMap": {
+    "1zSIGN": "docform_core",
+    "dianthus": "dianthus-core"
+  },
+  "templateList": [
+    {
+      "templateName": "JessicaDoSignDesc",
+      "templateUid": "123456789"
+    },
+    {
+      "templateName": "JessicaTestCuz",
+      "templateUid": "JessicaTestCuz"
+    },
+    {
+      "templateName": "看診及收費標準暨自費說明同意書",
+      "templateUid": "CJTS01"
+    },
+    {
+      "templateName": "3D4D胎兒超音波",
+      "templateUid": "CJTS02"
+    },
+    {
+      "templateName": "自費超音波檢查說明暨同意書",
+      "templateUid": "CJTS03"
+    },
+    {
+      "templateName": "高層次胎兒超音波檢查說明暨同意書",
+      "templateUid": "CJTS04"
+    },
+    {
+      "templateName": "第一孕期唐氏症篩檢說明暨同意書",
+      "templateUid": "CJTS05"
+    },
+    {
+      "templateName": "(測試)_(1)看診及收費標準暨自費說明同意書",
+      "templateUid": "A0001"
+    },
+    {
+      "templateName": "(測試)_(2)3D4D胎兒超音波",
+      "templateUid": "A0002"
+    },
+    {
+      "templateName": "(測試)_(3)自費超音波檢查說明暨同意書",
+      "templateUid": "A0003"
+    },
+    {
+      "templateName": "(測試)_(4)高層次胎兒超音波檢查說明暨同意書",
+      "templateUid": "A0004"
+    },
+    {
+      "templateName": "(測試)_(5)第一孕期唐氏症篩檢說明暨同意書",
+      "templateUid": "A0005"
+    },
+    {
+      "templateName": "(測試)_(6)第一孕期三合一妊娠風險評估同意書",
+      "templateUid": "A0006"
+    },
+    {
+      "templateName": "(測試)_(7)胎兒心臟超音波檢查說明暨同意書",
+      "templateUid": "A0007"
+    }
+  ],
+  "areaDept": [
+    {
+      "areaCode": "35012515416",
+      "areaName": "禾馨民權婦幼診所",
+      "depts": [
+        {
+          "deptCode": 3,
+          "deptName": "小兒外科"
+        }
+      ]
+    },
+    {
+      "areaCode": "3501184731",
+      "areaName": "禾馨婦產科診所",
+      "depts": [
+        {
+          "deptCode": 1,
+          "deptName": "婦產科(懷寧)"
+        },
+        {
+          "deptCode": 10,
+          "deptName": "皮膚科(懷寧)"
+        },
+        {
+          "deptCode": 25,
+          "deptName": "內科(懷寧)"
+        },
+        {
+          "deptCode": 30,
+          "deptName": "整外(懷寧)"
+        },
+        {
+          "deptCode": 38,
+          "deptName": "神內(懷寧)"
+        },
+        {
+          "deptCode": 39,
+          "deptName": "直腸外(懷寧)"
+        },
+        {
+          "deptCode": 43,
+          "deptName": "新陳代謝科(懷寧)"
+        },
+        {
+          "deptCode": 76,
+          "deptName": "小兒科(懷寧)"
+        },
+        {
+          "deptCode": 58,
+          "deptName": "血液腫瘤科(懷寧)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+<div fxLayout="row" fxLayoutAlign="space-between center" class="paginator">
+  <ng-content select="[topContent]"></ng-content>
+  <mat-paginator #paginator showFirstLastButtons fxFlex="1 1 auto"
+    [length]="total"
+    [pageIndex]="pageIndex"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[2, 5, 10, 20]" 
+    (page)="changePage($event)"
+    *ngIf="showPaginator === 'BEFORE' || showPaginator === 'BOTH' ">
+  </mat-paginator>
+</div>
+
+
+<table mat-table [dataSource]="dataList!" class="shared-table shared-table--has-rwd">
+  <ng-content select="[tableContent]"></ng-content>
+
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell no-data-cell" [attr.colspan]="displayedColumns.length">
+      {{ 'general.noData' | translate}}
+    </td>
+  </tr>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns" fxHide.lt-lg></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>
+
+<div fxLayout="row" fxLayoutAlign="space-between center" class="paginator">
+  <ng-content select="[bottomContent]"></ng-content>
+  <mat-paginator #paginator showFirstLastButtons fxFlex="1 1 auto"
+    [length]="total"
+    [pageIndex]="pageIndex"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[2, 5, 10, 20]" 
+    (page)="changePage($event)"
+    *ngIf="showPaginator === 'AFTER' || showPaginator === 'BOTH' ">
+  </mat-paginator>
+</div>
+

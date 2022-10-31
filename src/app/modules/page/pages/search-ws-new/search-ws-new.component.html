@@ -1,0 +1,111 @@
+<div class="page" fxLayout="column">
+  <app-search-ws-accordion (emitFormVal)="search($event)"></app-search-ws-accordion>
+  <ng-container *ngIf="(wsQuery$ | async)">
+    <div class="accordion accordion--accent" fxLayout="row wrap" fxLayoutAlign="space-between center">
+      <div class="accordion__header" fxLayout="row wrap" fxLayoutAlign="stretch center" fxLayoutGap="8px">
+        <div fxFlex="0 0 200px" class="accordion__title">
+          <span></span>
+          {{'general.search' | translate}}{{'general.result' | translate}}
+        </div>
+      </div>
+    </div>
+    <app-table [dataList]="(wsList$ | async)" [displayedColumns]="displayedColumns"
+               [total]="(wsTotal$ | async)" [refresh$]="refresh$" showPaginator="BOTH"
+               [pageIndex]="(pagination$ |async)?.pageIndex" [pageSize]="(pagination$ |async)?.pageSize"
+               (pageChange)="changePage($event)">
+      <button mat-stroked-button topContent color="accent" class="table__btn" (click)="finishMultiWs()">
+        {{'1zSIGN.multiFinish' | translate}}
+      </button>
+
+      <button mat-stroked-button bottomContent color="accent" class="table__btn" (click)="finishMultiWs()">
+        {{'1zSIGN.multiFinish' | translate}}
+      </button>
+
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox (change)="$event ? masterToggle() : null"
+                        [checked]="selection.hasValue() && (isAllSelected() | async)!"
+                        [indeterminate]="selection.hasValue() && (isAllSelected() | async) === false" color="accent"
+                        *ngIf="(canFinishedWs$ | async)?.length !==0">
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(element) : null"
+                        [checked]="selection.isSelected(element)" color="accent"
+                        *ngIf="(element.workstageStatus === WS_STATE.NORMAL && element.workstageSignStatus === SIGN_STATE.SIGNED)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>{{'1zSIGN.templateName' | translate}}</th>
+        <td mat-cell *matCellDef="let element">
+          <ng-container *ngIf="(element.workstageStatus !== WS_STATE.FINISHED); else templateName">
+            <div class="link text--primary" fxLayout="row" fxLayoutAlign="stretch center" (click)="openeEditor(element)">
+              {{element.templateName}}
+              <mat-icon svgIcon="custom-svg:open" class="text__icon"></mat-icon>
+            </div>
+          </ng-container>
+          <ng-template #templateName>
+            {{element.templateName}}
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="ptNo">
+        <th mat-header-cell *matHeaderCellDef>{{'History.ptNO' | translate}}</th>
+        <td mat-cell *matCellDef="let element">
+          {{element.customData.ptNO}}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="ptInfo">
+        <th mat-header-cell *matHeaderCellDef>{{'general.name' | translate}}/{{'general.pid' | translate}}</th>
+        <td mat-cell *matCellDef="let element">
+          <div class="ptName">{{element.customData.ptName}}</div>
+          <div class="ptIDNO">{{element.customData.ptIDNO}}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="createTime">
+        <th mat-header-cell *matHeaderCellDef>{{'general.createTime' | translate}}</th>
+        <td mat-cell *matCellDef="let element">
+          {{element.createTime | date:'yyyy/MM/dd HH:mm:ss'}}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>{{'general.status' | translate}}</th>
+        <td mat-cell *matCellDef="let element">
+          <ng-container *ngIf="element.workstageStatus === WS_STATE.NORMAL; else others">
+            <ng-container *ngIf="(element.workstageSignStatus === SIGN_STATE.SIGNING || element.workstageSignStatus === SIGN_STATE.NOT_SIGNED); else signed">
+              <span class="state state--yellow"></span>{{'1zSIGN.waitSign' | translate: {signRole: element?.nextSignRole?.signRoleName  ?? ''} }}
+            </ng-container>
+            <ng-template #signed>
+              <span class="state state--turquoise"></span>
+              {{'1zSIGN.signStatus.' + element.workstageSignStatus | translate}}
+            </ng-template>
+          </ng-container>
+          <ng-template #others>
+            <span class="state state--pirple"></span>
+            {{'1zSIGN.status.' + element.workstageStatus | translate}}
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-button color="accent" (click)="finishWs(element)"
+                  *ngIf="element.workstageStatus === WS_STATE.NORMAL && element.workstageSignStatus === SIGN_STATE.SIGNED">
+            {{'1zSIGN.finish' | translate}}
+          </button>
+          <button mat-button class="btn--pirple" (click)="downloadWS(element)"
+                  *ngIf="element.workstageStatus === WS_STATE.FINISHED">
+            {{'general.download' | translate}}
+          </button>
+        </td>
+      </ng-container>
+    </app-table>
+  </ng-container>
+</div>
