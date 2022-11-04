@@ -1,3 +1,18 @@
 :host {
     margin-bottom: 8px;
+
+    .mat-form-field {
+        position: relative;
+        width: 100%;
+        &__block {
+            margin-top: 22px;
+        }
+        &__lable {
+            &--top {
+            position: absolute;
+            left: -10px;
+            top: -22px;
+            }
+        }
+    }
 }

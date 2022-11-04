@@ -6,10 +6,14 @@ export class CuzWsCondition {
 
   //areaDept?: string;
   DIV_NAME?: string;
+  Div_No_Name?: string;
+  Clinic_Name?: string;
+  Division_Name?: string;
 
   doctorNo?: string;
   ptNO?: string;
   ptIDNO?: string;
+  templateName?: string;
   state?: string;
   processState?: string;
   signRoleName?: string;

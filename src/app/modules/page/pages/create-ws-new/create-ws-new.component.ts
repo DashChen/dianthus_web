@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { LocalizationService } from '@cg/ng-localization';
-import { debounceTime, distinctUntilChanged, fromEvent } from 'rxjs';
+import { debounceTime, distinctUntilChanged, finalize, fromEvent, map, Observable, startWith, Subject } from 'rxjs';
 import { AuthService } from '../../../shared/modules/auth/services/auth.service';
 import { ProcessState } from '../../enums/process-state.enum';
 import { AreaDept1 } from '../../models/area-dept1';
@@ -24,7 +24,7 @@ import { Tag } from '../../models/tag';
 @Component({
   selector: 'app-create-ws-new',
   templateUrl: './create-ws-new.component.html',
-  styleUrls: ['./create-ws-new.component.css']
+  styleUrls: ['./create-ws-new.component.scss']
 })
 export class CreateWsNewComponent implements OnInit {
 
@@ -54,6 +54,7 @@ export class CreateWsNewComponent implements OnInit {
   consentList: Consent[] = [];
   _consentList: Consent[] = [];
   consentKey: string = "";
+  checkedConsetList: Consent[] = [];
 
 
   pageIndex = 0;
@@ -65,8 +66,41 @@ export class CreateWsNewComponent implements OnInit {
   isAllChoice = false;
 
   _areaDeptList: Array<Select2OptionData> = new Array<Select2OptionData>();
+  filteredAreaDeptOptions: Observable<Select2OptionData[]> = new Observable<Select2OptionData[]>();
+  areaDept$ = new Subject<string>();
+  changeAreaDept(value: string) {
+    this.areaDept$.next(value);
+    const item = this._areaDeptList.find(_item => _item.id === value);
+    this.workstageSignKey = item ? item['areaCode'] : '';
+    this.choiceHospital = value || '';
+    console.log('changeAreaDept', value, item, this.workstageSignKey, this.choiceHospital);
+  }
+  _filterAreaDept(value: string): Select2OptionData[] {
+    // console.log('_filterAreaDept', value);
+    if (value.trim().length === 0) {
+      return this._areaDeptList;
+    }
+    return this._areaDeptList.filter(option => option.text.includes(value));
+  }
+  workstageSignKey: string = '';
+
+
   _doctorList: Array<Select2OptionData> = new Array<Select2OptionData>();
   _doctorList2: Array<Select2OptionData> = new Array<Select2OptionData>();
+  filteredDoctorOptions: Observable<Select2OptionData[]> = new Observable<Select2OptionData[]>();
+  doctor$ = new Subject<string>();
+  changeDocotr(value: string) {
+    this.doctor$.next(value);
+  }
+
+  _filterDoctor(value: string): Select2OptionData[] {
+    console.log('_filterDoctor', value);
+    if (value.trim().length === 0) {
+      return this._doctorList2;
+    }
+    return this._doctorList2.filter(option => option.text.includes(value));
+  }
+
   options: Options = {
     theme: "classic",
     width: "300",
@@ -83,9 +117,18 @@ export class CreateWsNewComponent implements OnInit {
   showResult = false;
 
   tagList: Tag[] = [];
+  divNoList: Select2OptionData[] = [];
+  selectedDivNo: string = '0';
+
+  selectDivNo(event: Event) {
+    console.log('selectDivNo', event);
+    this.selectedDivNo = (event.target as HTMLSelectElement).value;
+  }
 
 
-  constructor(private pageNewService: PageNewService, private authService: AuthService,
+  constructor(
+    private pageNewService: PageNewService,
+    private authService: AuthService,
     private dialog: MatDialog,
     private route: ActivatedRoute,
     private pageService: PageService,
@@ -93,27 +136,46 @@ export class CreateWsNewComponent implements OnInit {
 
     this.date1 = this.pageNewService.dateAsYYYYMMDD(new Date());
 
-    this.pageNewService.getAreaDeptListApi().subscribe(
-      result => {
-        this.areaDeptList = result;
-      },
-      err => {
-        alert(JSON.stringify(err));
-      },
-      () => {
-        for (let i = 0; i < this.areaDeptList.length; i++) {
-          for (let j = 0; j < this.areaDeptList[i].depts.length; j++) {
+    this.pageNewService.getAreaDeptListApi()
+      .pipe(
+        finalize(() => {
+          this.filteredAreaDeptOptions = this.areaDept$.pipe(
+            startWith(''),
+            map(value => this._filterAreaDept(value)),
+          );
+        })
+      )
+      .subscribe(
+        result => {
+          this.areaDeptList = result;
+        },
+        err => {
+          alert(JSON.stringify(err));
+        },
+        () => {
+          for (let i = 0; i < this.areaDeptList.length; i++) {
+            for (let j = 0; j < this.areaDeptList[i].depts.length; j++) {
 
-            this._areaDeptList.push({
-              id: this.areaDeptList[i].areaName + '/' + this.areaDeptList[i].depts[j].deptName + ':' + this.areaDeptList[i].areaCode,
-              text: this.areaDeptList[i].areaName + '/' + this.areaDeptList[i].depts[j].deptName
-            });
+              this._areaDeptList.push({
+                id: this.areaDeptList[i].areaName + '/' + this.areaDeptList[i].depts[j].deptName,
+                text: this.areaDeptList[i].areaName + '/' + this.areaDeptList[i].depts[j].deptName,
+                ...this.areaDeptList[i]
+              });
+            }
           }
         }
-      }
-    );
+      );
 
-    this.pageNewService.getDoctorListApi().subscribe(
+    this.pageNewService.getDoctorListApi()
+      .pipe(
+        finalize(() => {
+          this.filteredDoctorOptions = this.doctor$.pipe(
+            startWith(''),
+            map(value => this._filterDoctor(value)),
+          );
+        })
+      )
+    .subscribe(
       result => {
         this.doctorList = result.data;
       },
@@ -125,7 +187,6 @@ export class CreateWsNewComponent implements OnInit {
           this._doctorList.push({ id: this.doctorList[i].doctorName, text: this.doctorList[i].doctorName });
         }
         this._doctorList2 = this._doctorList;
-
       }
     );
 
@@ -158,7 +219,6 @@ export class CreateWsNewComponent implements OnInit {
       }
     );
 
-
     this.pageNewService.getTagListApi().subscribe(
       result => {
         for (let i = 0; i < result.data.length; i++) {
@@ -173,7 +233,12 @@ export class CreateWsNewComponent implements OnInit {
       }
     );
 
-
+    this.pageNewService.getDefaultDivNos().subscribe(
+      (res) => {
+        console.log('getDefaultDivNos', res);
+        this.divNoList = res;
+      }
+    );
   }
 
   ngOnInit(): void {
@@ -223,19 +288,21 @@ export class CreateWsNewComponent implements OnInit {
         //err.status
         alert(JSON.stringify(err));
       },
-      () => {        
+      () => {
         this.panelOpenState1 = true;
         this.panelOpenState2 = true;
         this.panelOpenState3 = true;
         this.panelOpenState4 = true;
 
         //alert(this.pageNewService.leftpad(this.pid, 7));
+        // 取回看診資料
         this.pageNewService.getClinicDataApi(pno, longTime).subscribe(
           result => {
             this.clinicData.medicalRecordsNo = result.data.medicalRecordsNo;
             this.clinicData.patient = result.data.patient;
             this.clinicData.patientId = result.data.patientId;
             this.clinicData.patientPhone = result.data.patientPhone;
+
             for (let i = 0; i < result.data.clinicList.length; i++) {
               this.clinicData.clinicList.push({
                 checked: i == 0 ? true : false,
@@ -247,8 +314,7 @@ export class CreateWsNewComponent implements OnInit {
                 shift: result.data.clinicList[i].shift.split("_")[1],
               })
               if (i == 0) {
-                this.choiceHospital = result.data.clinicList[i].areaDept.split("_")[1] + "/" + result.data.clinicList[i].clinicName.split("_")[1];
-                alert(this.choiceHospital);
+                this.changeAreaDept(result.data.clinicList[i].areaDept.split("_")[1] + "/" + result.data.clinicList[i].clinicName.split("_")[1]);
               }
             }
           },
@@ -268,16 +334,32 @@ export class CreateWsNewComponent implements OnInit {
 
   }
 
-  checked(index: number) {
+  changeCheck(e: any, item: Consent) {
+    console.log('changeCheck', e, item);
+    item.checked = e;
+    if (e) {
+      this.checkedConsetList.push(item);
+    } else {
+      const index = this.checkedConsetList.findIndex(_item => _item.templateUid === item.templateUid);
+      if (index > -1) {
+        this.checkedConsetList.splice(index, 1);
+      }
+    }
+  }
+
+  changeClinicData(index: number) {
     for (let i = 0; i < this.clinicData.clinicList.length; i++) {
       if (i != index) {
         this.clinicData.clinicList[i].checked = false;
       }
     }
+    // 變更同意書院所及科別
+    const focusItem = this.clinicData.clinicList[index];
+    // console.log(focusItem);
+    this.changeAreaDept(focusItem.checked ? (focusItem.areaDept + "/" + focusItem.clinicName) :'');
   }
 
-
-
+  // 搜尋同意書
   searchConsentList() {
     this._consentList = [];
     this.consentList = [];
@@ -388,7 +470,8 @@ export class CreateWsNewComponent implements OnInit {
   }
 
   changeAllChoice() {
-    for (let i = 0; i < this.consentList.length; i++) {
+    // 改為當前頁面
+    for (let i = (this.pageIndex * this.pageSize); i < ((this.pageIndex + 1) * this.pageSize); i++) {
       this.consentList[i].checked = this.isAllChoice;
     }
   }
@@ -483,13 +566,18 @@ export class CreateWsNewComponent implements OnInit {
     }
 
     this.selectedAgreements = [];
-    for (let i = 0; i < this.consentAllList.length; i++) {
-      if (this.consentAllList[i].checked) {
-        this.selectedAgreements.push({
-          templateName: this.consentAllList[i].templateName, templateUid: this.consentAllList[i].templateUid, status: 1, wsId: '', errorMsg: '', additionInfo: {}, workstageSignKey: this.choiceHospital.split(':')[1]
-        });
-      }
-    }
+
+    this.checkedConsetList.forEach(_item => {
+      this.selectedAgreements.push({
+        templateName: _item.templateName,
+        templateUid: _item.templateUid,
+        status: 1,
+        wsId: '',
+        errorMsg: '',
+        additionInfo: {},
+        workstageSignKey: this.workstageSignKey
+      });
+    });
 
     if (this.selectedAgreements.length <= 0) {
       alert("請至少選擇一份同意書");
@@ -536,14 +624,23 @@ export class CreateWsNewComponent implements OnInit {
       return;
     }
 
+    if (!this.selectedDivNo || this.selectedDivNo == '-1') {
+      alert("請選擇診別");
+      return;
+    }
+
 
     this.showResult = true;
 
+    // 新增 Div_No_Name 診別
+    const Div_No_Name = this.divNoList.find(_item => _item.id === this.selectedDivNo)?.text;
+    // 院區/科別 分拆進 Clinic_Name:XX院 Division_Name:XX科
+    const DIV_NAME = this.choiceHospital.split(':')[0];
     this.additionInfo = {
       doctorNo: docName,
       clinicDate: this.date1.replace('-', '/').replace('-', '/'),
       DIV_NO: divno,
-      DIV_NAME: this.choiceHospital.split(':')[0],
+      DIV_NAME: DIV_NAME,
       ptNO: this.clinicData.medicalRecordsNo,
       ptName: this.clinicData.patient,
       ptGender: this.patient.sex,
@@ -557,6 +654,9 @@ export class CreateWsNewComponent implements OnInit {
       contractNum1: '',
       contractRela1: '',
       motherName: this.patient.motherName,
+      Div_No_Name: Div_No_Name || '',
+      Clinic_Name: DIV_NAME.split('/')[0] || '',
+      Division_Name: DIV_NAME.split('/')[1] || ''
     }
     console.log("*******************************************");
     console.log("*******************************************");
@@ -590,8 +690,12 @@ export class CreateWsNewComponent implements OnInit {
   }
 
   clearConsent(index: number) {
-    this.consentList[index].checked = false;
+    const deleted = this.checkedConsetList.splice(index, 1);
+    const i = this.consentList.findIndex(_item => _item.templateUid === deleted[0].templateUid);
+    if (i > -1) {
+      const nItem = this.consentList[i];
+      nItem.checked = false;
+      this.consentList.splice(i, 1, nItem);
+    }
   }
-
-
 }

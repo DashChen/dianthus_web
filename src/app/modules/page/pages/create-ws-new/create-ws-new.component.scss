@@ -1,0 +1,45 @@
+.mat-expansion-panel {
+  margin-bottom: 10px !important;
+  /*border:1px solid #000;*/
+}
+
+#table1 td{
+    padding:5px 10px;
+    border:1px solid #bbb;
+    font-size:medium;
+}
+
+#table2 td {
+  padding: 5px 15px;
+  border: 1px solid #bbb;
+}
+
+.mat-form-field {
+  position: relative;
+  width: 100%;
+  &__block {
+    margin-top: 22px;
+  }
+  &__lable {
+    &--top {
+      position: absolute;
+      left: -10px;
+      top: -22px;
+    }
+  }
+}
+
+.consent {
+  &-list {
+    display: inline-block;
+  }
+  &-tag {
+    background-color:#f6c2c2;
+    border-radius:10px;
+    display:inline-block;
+    font-weight:bold;
+    font-size:medium;
+    margin:5px;
+    padding:3px 10px;
+  }
+}

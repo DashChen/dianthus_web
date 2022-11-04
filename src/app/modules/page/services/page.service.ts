@@ -26,6 +26,7 @@ export class PageService {
   _changeWsUrl = '';
   _downloadUrl = '';
   _patientUrl = '';
+  _mappingTableUrl = '';
 
   areaDepts: AreaDept[] = [];
 
@@ -49,7 +50,8 @@ export class PageService {
     this._changeWsUrl = `${ezSignUrl}/rest/workstage`;
     this._downloadUrl = `${ezSignUrl}/rest/document`;
     this._patientUrl = `${coreUrl}/rest/patient`;
-    
+    this._mappingTableUrl = `${coreUrl}/rest/1z/workstage/order`;
+
     this.areaDepts = this.resolverService.getAreaDept();
   }
 
@@ -83,11 +85,22 @@ export class PageService {
     );
   }
 
-  createWsByCuzIdWithVal(cuzWsId: string, addition: { [key: string]: string | number }, workstageSignKey:string): Observable<HandleContext> {
-    const url = `${ this._cuzWsUrl}/${cuzWsId}/full`;
-    return (this.httpHandler.post(url, { 'addition_info': addition, 'workstageSignKey': workstageSignKey}, {
-      optionHeader: httpOptions
-    }) as Observable<HandleContext>).pipe(
+  createWsByCuzIdWithVal(cuzWsId: string, addition: { [key: string]: string | number }, workstageSignKey:string, ptNo: string = ''): Observable<HandleContext> {
+    // const url = `${ this._cuzWsUrl}/${cuzWsId}/full`;
+    // const http$ = (this.httpHandler.post(url, { 'addition_info': addition, 'workstageSignKey': workstageSignKey}, {
+    //   optionHeader: httpOptions
+    // }) as Observable<HandleContext>);
+
+    const url = this._mappingTableUrl;
+    const http$ = (this.httpHandler.post(url, {
+      'ptNo': ptNo,
+      'templateId': cuzWsId,
+      'addition_info': addition,
+      'workstageSignKey': workstageSignKey}, {
+        optionHeader: httpOptions
+      }) as Observable<HandleContext>);
+
+    return http$.pipe(
       catchError((error: HandleContext) => {
         console.log(error);
         if (error.status === 500) {

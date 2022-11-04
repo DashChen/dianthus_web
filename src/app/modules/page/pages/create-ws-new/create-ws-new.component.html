@@ -100,7 +100,7 @@
             <td>負責醫生</td>
           </tr>
           <tr *ngFor="let item of clinicData.clinicList; let i = index">
-            <td><mat-checkbox (change)="checked(i)" [(ngModel)]="item.checked"></mat-checkbox></td>
+            <td><mat-checkbox (change)="changeClinicData(i)" [(ngModel)]="item.checked"></mat-checkbox></td>
             <td>{{item.executionDate}}</td>
             <td>{{item.shift}}</td>
             <td>{{item.areaDept}}/{{item.clinicName}}</td>
@@ -118,30 +118,52 @@
         <br />
       </div>
       <div *ngIf=" !clinicData.clinicList || clinicData.clinicList.length == 0 ">
-        <div>
-          <div style="display:inline-block;padding:5px;vertical-align:top">
-            <span>班別</span>
-            <br />
-            <select [(ngModel)]="choiceClass" style="font-size:medium;width:180px;padding:2px 5px;">
-              <option value="0">不拘</option>
-              <option value="1">早班</option>
-              <option value="2">中班</option>
-              <option value="3">午班</option>
-              <option value="4">晚班</option>
-              <option value="5">夜班</option>
-            </select>
+        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+          <div class="mat-form-field__block">
+            <mat-form-field class="mat-form-field" appearance="outline">
+              <label class="mat-form-field__lable--top">班別</label>
+              <select matNativeControl [(ngModel)]="choiceClass">
+                <option value="0">不拘</option>
+                <option value="1">早班</option>
+                <option value="2">中班</option>
+                <option value="3">午班</option>
+                <option value="4">晚班</option>
+                <option value="5">夜班</option>
+              </select>
+            </mat-form-field>
           </div>
-          <div style="display:inline-block;padding:5px;vertical-align:top">
-            <span>負責醫生</span>&nbsp;<span style="font-size:small;color:red">*必填</span>
-            <br />
-            <ng-select2 style="font-size:medium;padding:3px 5px;margin-right:15px;font-size:large;"
-                        [data]="_doctorList2"
-                        [placeholder]="'請選擇醫生'"
-                        [(ngModel)]="choiceDoctor"
-                        [options]="options">
-            </ng-select2>
+
+          <div class="mat-form-field__block">
+            <mat-form-field class="mat-form-field" appearance="outline">
+              <label class="mat-form-field__lable--top">診別</label>
+              <select matNativeControl (change)="selectDivNo($event)">
+                <option [value]="-1">未選擇</option>
+                <option *ngFor="let option of divNoList" [value]="option.id"
+                        [selected]="selectedDivNo === option.id">{{ option.text }}</option>
+              </select>
+            </mat-form-field>
           </div>
-          <br />
+
+          <div class="mat-form-field__block">
+            <mat-form-field class="mat-form-field" appearance="outline">
+              <label class="mat-form-field__lable--top">
+                <span>負責醫生</span>&nbsp;<span style="font-size:small;color:red">*必填</span>
+              </label>
+              <input type="text"
+                     placeholder="請選擇醫生"
+                     aria-label="Number"
+                     matInput
+                     [ngModel]="choiceDoctor"
+                     (ngModelChange)="changeDocotr($event)"
+                     [matAutocomplete]="autoDoctor">
+              <mat-autocomplete autoActiveFirstOption #autoDoctor="matAutocomplete">
+                <mat-option *ngFor="let option of filteredDoctorOptions | async" [value]="option.id">
+                  {{option.text}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+
         </div>
       </div>
     </mat-expansion-panel>
@@ -153,32 +175,43 @@
         <mat-panel-description>
         </mat-panel-description>
       </mat-expansion-panel-header>
-      <div>
-        <div style="padding: 10px 0px;display:inline-block">
-          <span>院所及科別</span>&nbsp;<span style="font-size:small;color:red">*必填</span>
-          <br />
-          <ng-select2 style="font-size:medium;width:300px;padding:3px 5px;margin-right:15px;font-size:large"
-                      [data]="_areaDeptList"
-                      [placeholder]="'請選擇院所 / 科別'"
-                      [(ngModel)]="choiceHospital"
-                      [options]="options">
-          </ng-select2>
-        </div>
-        <div style="padding:5px;display:inline-block">
-          <div *ngFor="let item of consentList; let i=index" style="display: inline-block;">
-            <div *ngIf="item.checked">
-              <span style="display:inline-block;padding:3px 10px;margin:5px;background-color:#f6c2c2;border-radius:10px;font-weight:bold;font-size:medium">
-                {{i+1}}.&nbsp;{{item.templateName}} &nbsp;&nbsp;
-                <button (click)="clearConsent(i)" mat-icon-button style="margin:0">
-                  <mat-icon style="font-size:medium">clear</mat-icon>
-                </button>
-              </span>
-            </div>
+      <div fxLayout="column">
+        <div fxLayout="column">
+          <div class="mat-form-field__block">
+            <mat-form-field class="mat-form-field" appearance="outline">
+              <label class="mat-form-field__lable--top">
+                <span>院所及科別</span>&nbsp;<span style="font-size:small;color:red">*必填</span>
+              </label>
+              <input type="text"
+                     placeholder="請選擇院所 / 科別"
+                     aria-label="area dept"
+                     matInput
+                     [ngModel]="choiceHospital"
+                     (ngModelChange)="changeAreaDept($event)"
+                     [matAutocomplete]="autoAreaDept">
+              <mat-autocomplete autoActiveFirstOption #autoAreaDept="matAutocomplete">
+                <mat-option *ngFor="let option of filteredAreaDeptOptions | async" [value]="option.id">
+                  {{option.text}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
           </div>
         </div>
-        <br />
-        <div>
 
+        <div class="consent-list" *ngIf="checkedConsetList.length > 0">
+          <ng-container *ngFor="let item of checkedConsetList; let i=index">
+            <ng-container *ngIf="item.checked">
+              <span class="consent-tag">
+                {{i+1}}.&nbsp;{{item.templateName}} &nbsp;&nbsp;
+                <button (click)="clearConsent(i)" mat-icon-button style="margin:0">
+                  <mat-icon>clear</mat-icon>
+                </button>
+              </span>
+            </ng-container>
+          </ng-container>
+        </div>
+
+        <div>
           <table id="table2" style="width: 100%; font-size: medium">
             <tr>
               <td style="width:10%;text-align:center;"><mat-checkbox [(ngModel)]="isAllChoice" (change)="changeAllChoice()"></mat-checkbox></td>
@@ -190,11 +223,10 @@
                   <input [(ngModel)]="consentKey" style="font-size: medium; min-width: 380px; padding: 3px 5px; margin-right: 8px; font-size: medium; width: calc(100%-400px) !important" placeholder="同意書模糊搜尋" />
                   <button (click)="searchConsentList()" mat-raised-button color="primary" style="width: 80px;">搜尋</button>
                 </div>
-               
               </td>
             </tr>
             <tr *ngFor="let item of _consentList; let i = index">
-              <td style="width:10%;text-align:center"><mat-checkbox [(ngModel)]="item.checked"></mat-checkbox></td>
+              <td style="width:10%;text-align:center"><mat-checkbox [ngModel]="item.checked" (ngModelChange)="changeCheck($event, item)"></mat-checkbox></td>
               <td style="width:90%">{{item.templateName}}</td>
             </tr>
             <tr>
@@ -220,7 +252,7 @@
           </table>
         </div>
       </div>
-</mat-expansion-panel>
+    </mat-expansion-panel>
   </mat-accordion>
 
   <app-create-ws-result *ngIf="showResult === true" [agreements]="selectedAgreements" (sEditorAgreement)="saveOpenAgreements($event)"></app-create-ws-result>

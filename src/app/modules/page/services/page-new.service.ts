@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { NgConfigService } from '@cg/ng-config';
+import { Select2OptionData } from 'ng-select2';
 import { Observable, of } from 'rxjs';
 import { AreaDept1 } from '../models/area-dept1';
 import { Clinic } from '../models/clinic';
@@ -48,7 +49,7 @@ export class PageNewService {
 
 
   getAreaDeptListApi() {
-    const areaDeptList: AreaDept1[] = this.configService.get('areaDept');    
+    const areaDeptList: AreaDept1[] = this.configService.get('areaDept');
     const obsofPatient = of(areaDeptList);
     return obsofPatient;
   }
@@ -92,6 +93,8 @@ export class PageNewService {
     return obsofPatient;
   }
 
- 
+  getDefaultDivNos() {
+    return of(this.configService.get('divNo') as Select2OptionData[])
+  }
 
 }

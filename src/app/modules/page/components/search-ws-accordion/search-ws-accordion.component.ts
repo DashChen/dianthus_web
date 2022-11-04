@@ -12,7 +12,7 @@ import { SignRole } from '@page/models/sign-role.model';
 import { PageService } from '@page/services/page.service';
 import { AreaDept } from '@resolver/models/area-dept.model';
 import { AuthService } from '@shared-auth/services/auth.service';
-import { Observable, map, catchError, of, switchMap, iif } from 'rxjs';
+import { Observable, map, catchError, of, switchMap, iif, startWith, finalize } from 'rxjs';
 import { Doctor } from '../../models/doctor';
 import { Select2OptionData } from "ng-select2";
 import { Options } from "select2";
@@ -50,9 +50,16 @@ export class SearchWsAccordionComponent implements OnInit {
 
   areaDeptList: AreaDept1[] = [];
   doctorList: Doctor[] = [];
+
   _areaDeptList: Array<Select2OptionData> = new Array<Select2OptionData>();
+  filteredAreaDeptOptions: Observable<Select2OptionData[]> = new Observable<Select2OptionData[]>();
+
   _doctorList: Array<Select2OptionData> = new Array<Select2OptionData>();
   _doctorList2: Array<Select2OptionData> = new Array<Select2OptionData>();
+  filteredDoctorOptions: Observable<Select2OptionData[]> = new Observable<Select2OptionData[]>();
+
+  divNoList: Select2OptionData[] = [];
+
   options1: Options = {
     theme: "classic",
     width: "300"
@@ -81,61 +88,81 @@ export class SearchWsAccordionComponent implements OnInit {
       clinicDateStart: [this.getLastWeekDate(), Validators.required],
       clinicDateEnd: [new Date(), Validators.required],
       clinicApn: [TimePeriod.ALL],
-      areaDept: [" ", Validators.required],
+      areaDept: ["不拘", Validators.required],
       doctorNo: [" "],
       ptNO: [],
       ptIDNO: [],
+      divNo: '0',
+      templateName: '',
       status: [WsStatus.ALL]
     });
     Object.values(TimePeriod).forEach(val => {
       this.timePeriods = [...this.timePeriods, ...[val]];
     });
 
-
-    this.pageNewService.getAreaDeptListApi().subscribe(
-      result => {
-     
-        this.areaDeptList = result;
-      },
-      err => {
-        alert(JSON.stringify(err));
-      },
-      () => {
-        this._areaDeptList.push({
-          id: " ",
-          text: "不拘"
-        });
-        for (let i = 0; i < this.areaDeptList.length; i++) {
-          for (let j = 0; j < this.areaDeptList[i].depts.length; j++) {
-            this._areaDeptList.push({
-              id: this.areaDeptList[i].areaName + '/' + this.areaDeptList[i].depts[j].deptName,
-              text: this.areaDeptList[i].areaName + '/' + this.areaDeptList[i].depts[j].deptName
-            });
+    this.pageNewService.getAreaDeptListApi()
+      .pipe(
+        finalize(() => {
+          this.filteredAreaDeptOptions = this.searchForm.controls['areaDept'].valueChanges.pipe(
+            startWith(' '),
+            map(value => this._filterAreaDept(value)),
+          );
+        })
+      ).subscribe(
+        result => {
+          this.areaDeptList = result;
+        },
+        err => {
+          alert(JSON.stringify(err));
+        },
+        () => {
+          this._areaDeptList.push({
+            id: "不拘",
+            text: "不拘"
+          });
+          for (let i = 0; i < this.areaDeptList.length; i++) {
+            for (let j = 0; j < this.areaDeptList[i].depts.length; j++) {
+              this._areaDeptList.push({
+                id: this.areaDeptList[i].areaName + '/' + this.areaDeptList[i].depts[j].deptName,
+                text: this.areaDeptList[i].areaName + '/' + this.areaDeptList[i].depts[j].deptName
+              });
+            }
           }
         }
-        
-      }
-    );
+      );
 
-    this.pageNewService.getDoctorListApi().subscribe(
-      result => {
-        this.doctorList = result.data;
-      },
-      err => {
-        alert(JSON.stringify(err));
-      },
-      () => {
-        this._doctorList.push({
-          id: " ",
-          text: "不拘"
-        });
-        for (let i = 0; i < this.doctorList.length ; i++) {
-          this._doctorList.push({
-            id: this.doctorList[i].doctorName,
-            text: this.doctorList[i].doctorName
-          });
-        }
-        this._doctorList2 = this._doctorList;
+    this.pageNewService.getDoctorListApi()
+        .pipe(finalize(() => {
+          this.filteredDoctorOptions = this.searchForm.controls['doctorNo'].valueChanges.pipe(
+            startWith(' '),
+            map(value => this._filterDoctor(value)),
+          );
+        })).subscribe(
+          result => {
+            this.doctorList = result.data;
+          },
+          err => {
+            alert(JSON.stringify(err));
+          },
+          () => {
+            this._doctorList.push({
+              id: " ",
+              text: "不拘"
+            });
+            for (let i = 0; i < this.doctorList.length ; i++) {
+              this._doctorList.push({
+                id: this.doctorList[i].doctorName,
+                text: this.doctorList[i].doctorName
+              });
+            }
+            this._doctorList2 = this._doctorList;
+          }
+        );
+
+    this.pageNewService.getDefaultDivNos().subscribe(
+      (res) => {
+        console.log('getDefaultDivNos', res);
+        this.divNoList = res;
       }
     );
 
@@ -153,6 +180,22 @@ export class SearchWsAccordionComponent implements OnInit {
 
     //  }
     //);
+  }
+
+  _filterAreaDept(value: string): Select2OptionData[] {
+    console.log('_filterAreaDept', value);
+    if (value.trim().length === 0) {
+      return this._areaDeptList;
+    }
+    return this._areaDeptList.filter(option => option.text.includes(value));
+  }
+
+  _filterDoctor (value: string): Select2OptionData[] {
+    console.log('_filterDoctor', value);
+    if (value.trim().length === 0) {
+      return this._doctorList2;
+    }
+    return this._doctorList2.filter(option => option.text.includes(value));
   }
 
   ngOnInit(): void {
@@ -205,34 +248,61 @@ export class SearchWsAccordionComponent implements OnInit {
     const clinicDateEnd = this.datepipe.transform(this.searchForm.value['clinicDateEnd'], 'yyyy/MM/dd');
     const clinicDate = `${clinicDateStart}-${clinicDateEnd}`;
     const temp = new CuzWsCondition({ClinicDate: clinicDate});
-    let signRoleName = '';
-    let processState = '';
     const status = this.searchForm.value['status'];
-  
-    if (status !== WsStatus.FINISHED && status !== -1) {
-      signRoleName = status;
-      processState = '1,2';
-      temp.updatePartical({signRoleName: signRoleName, processState: processState});
+    let updateObj = {};
+
+    switch (status) {
+      case WsStatus.FINISHED:
+        updateObj = {
+          processState: '1,2,3,4',
+          state: WsStatus.FINISHED + ''
+        }
+        break;
+      case WsStatus.TO_BE_STORE:
+        updateObj = {
+          processState: '1,2,3,4',
+          state: WsStatus.TO_BE_STORE + ''
+        }
+        break;
+      default:
+        if (status !== WsStatus.FINISHED && status !== -1) {
+          if (Number.isInteger(status)) {
+            updateObj = {
+              signRoleName: status,
+              processState: '1,2'
+            }
+          } else {
+            updateObj = {
+              processState: '3',
+              state: WsStatus.NORMAL + ''
+            }
+          }
+        }
     }
-    let workstageStatus = '';
-    if (status === WsStatus.FINISHED ) {
-      workstageStatus = WsStatus.FINISHED + '';
-      processState = '1,2,3,4';
-      temp.updatePartical({processState: processState, state: workstageStatus});
-    }
-    if ( status === WsStatus.TO_BE_STORE) {
-      workstageStatus = WsStatus.TO_BE_STORE + '';
-      processState = '1,2,3,4';
-      temp.updatePartical({ processState: processState, state: workstageStatus });
-    }
+    temp.updatePartical(updateObj);
+
+
     let clinicApn = '';
     if (this.searchForm.value['clinicApn'] !== TimePeriod.ALL) {
       clinicApn = this.searchForm.value['clinicApn'];
       temp.updatePartical({ DIV_NO: clinicApn});
     }
-   
-    if (this.searchForm.value['areaDept'].length > 0) {
-      temp.updatePartical({ DIV_NAME: this.searchForm.value['areaDept']});
+    const areaDept = this.searchForm.value['areaDept'].toString().trim();
+    if (areaDept.length > 0 && areaDept.includes('/')) {
+      const DIV_NAME = areaDept.split('/');
+      // 院區/科別 分拆進 Clinic_Name:XX院 Division_Name:XX科
+      temp.updatePartical({
+        DIV_NAME: areaDept,
+        Clinic_Name: DIV_NAME[0] || '',
+        Division_Name: DIV_NAME[1] || '',
+      });
+    }
+    // 診別
+    if (this.searchForm.value['divNo'] !== '-1') {
+      const Div_No_Name = this.divNoList.find(_item => _item.id === this.searchForm.value['divNo'])?.text;
+      temp.updatePartical({
+        Div_No_Name: Div_No_Name,
+      });
     }
     if (this.searchForm.value['doctorNo'] !== null && this.searchForm.value['doctorNo'].length > 0) {
       temp.updatePartical({doctorNo: this.searchForm.value['doctorNo']});
@@ -242,6 +312,11 @@ export class SearchWsAccordionComponent implements OnInit {
     }
     if (this.searchForm.value['ptIDNO'] !== null && this.searchForm.value['ptIDNO'].length > 0) {
       temp.updatePartical({ptIDNO: this.searchForm.value['ptIDNO']});
+    }
+    if (this.searchForm.value['templateName'].length > 0) {
+      temp.updatePartical({
+        templateName: this.searchForm.value['templateName'],
+      });
     }
 
     //if (this.searchForm.value['keyword'] !== null && this.searchForm.value['keyword'].length > 0) {

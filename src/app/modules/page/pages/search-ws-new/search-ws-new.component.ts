@@ -64,6 +64,22 @@ export class SearchWsNewComponent implements OnInit {
 
   wsList$ = this.wsQuery$.pipe(
     map((data) => (data as { [key: string]: unknown })["workstages"] as Workstage[] ?? []),
+    tap((data) => {
+      // console.log('wsList', data, this.selectedItems);
+      // 找出已選
+      if (this.selectedItems.length > 0) {
+        const selected: Workstage[] = [];
+        data.forEach(_item => {
+          const index = this.selectedItems.findIndex(_sI => _sI.workstageId === _item.workstageId);
+          if (index > -1) {
+            selected.push(_item);
+          }
+        });
+        if (selected.length > 0) {
+          this.selection.select(...selected);
+        }
+      }
+    }),
     shareReplay(1)
   );
 
@@ -74,6 +90,9 @@ export class SearchWsNewComponent implements OnInit {
   wsTotal$ = this.wsQuery$.pipe(
     map((data) => (data as { [key: string]: unknown })["amount"] as number ?? 0)
   );
+
+  disOpenLinkStatus = [this.WS_STATE.FINISHED, this.WS_STATE.REJECTED, this.WS_STATE.DELETED];
+  selectedItems: Workstage[] = [];
 
   constructor(
     private dialog: MatDialog,
@@ -89,6 +108,9 @@ export class SearchWsNewComponent implements OnInit {
   }
 
   search(condition: CuzWsCondition): void {
+    // 搜尋後清除已選
+    this.selectedItems = [];
+    this.selection.clear();
     this.searchCondition$.next(condition);
     this.pagination$.next({
       pageIndex: 0,
@@ -97,6 +119,7 @@ export class SearchWsNewComponent implements OnInit {
   }
 
   changePage(event: PageChangeEvent): void {
+    this.selection.clear();
     this.pagination$.next({
       pageIndex: event.pageIndex,
       pageSize: event.pageSize,
@@ -106,9 +129,10 @@ export class SearchWsNewComponent implements OnInit {
   isAllSelected(): Observable<boolean> {
     return (
       this.canFinishedWs$.pipe(
-        switchMap((list: Workstage[]) =>
-          of(list.length === this.selection.selected.length)
-        )
+        switchMap((list: Workstage[]) => {
+          // console.log('isAllSelected', list.length, this.selection.selected.length);
+          return of(list.length === this.selection.selected.length);
+        })
       ) ?? of(false)
     );
   }
@@ -127,10 +151,36 @@ export class SearchWsNewComponent implements OnInit {
       )
       .subscribe({
         next: (list: Workstage[]) => {
+          list.forEach(_item => {
+            const index = this.selectedItems.findIndex(_sI => _sI.workstageId === _item.workstageId);
+            if (index < 0) {
+              this.selectedItems.push(_item);
+            }
+          });
           this.selection.select(...list);
         },
-        error: () => this.selection.clear(),
+        error: () => {
+          this.selection.selected.forEach(_item => {
+            const index = this.selectedItems.findIndex(_sI => _sI.workstageId === _item.workstageId);
+            if (index > -1) {
+              this.selectedItems.splice(index, 1);
+            }
+          });
+          this.selection.clear();
+        },
       });
+  }
+
+  changeCheck(event: any, element: Workstage) {
+    if (event) {
+      this.selection.toggle(element);
+      this.selectedItems.push(element);
+    } else {
+      const index = this.selectedItems.findIndex(_sI => _sI.workstageId === element.workstageId);
+      if (index > -1) {
+        this.selectedItems.splice(index, 1);
+      }
+    }
   }
 
   getSelectedCheckBoxes(): Workstage[] {
@@ -139,10 +189,11 @@ export class SearchWsNewComponent implements OnInit {
 
   refresh(): void {
     this.refresh$.next(true);
-
+    this.selectedItems = [];
+    this.selection.clear();
     this.pagination$.next({
       pageIndex: 0,
-      pageSize: 10,
+      pageSize: this.pagination$.value.pageSize ?? 10,
     });
   }
 
@@ -151,10 +202,10 @@ export class SearchWsNewComponent implements OnInit {
   }
 
   finishMultiWs(): void {
-    if (this.selection.selected.length === 0) {
+    if (this.selectedItems.length === 0) {
       return;
     }
-    const fWs = this.selection.selected.map(select => new Workstage(select))
+    const fWs = this.selectedItems.map(select => new Workstage(select));
     this.openFinishWsDiaolog(fWs);
   }
 
@@ -201,10 +252,4 @@ export class SearchWsNewComponent implements OnInit {
       }
     })
   }
-
-
-  
-
-
-
 }

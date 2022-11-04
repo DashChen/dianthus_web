@@ -27,9 +27,6 @@
           <label class="form__label">{{'History.clinicApn' | translate}}</label>
           <mat-form-field appearance="outline">
             <mat-select formControlName="clinicApn">
-              <!--<mat-option *ngFor="let period of timePeriods" [value]="period">
-          {{ 'general.timePeriod.' + period | translate }}
-        </mat-option>-->
               <mat-option value="0">不拘</mat-option>
               <mat-option value="1">早班</mat-option>
               <mat-option value="2">中班</mat-option>
@@ -39,32 +36,37 @@
             </mat-select>
           </mat-form-field>
         </div>
-        <div class="form__column" fxFlex="0 0 auto" fxLayout="column">
-          <label class="form__label">{{'User.areaDept' | translate}}</label>
-          <!--<mat-form-field appearance="outline">
-      <mat-select formControlName="areaDept">
-        <mat-option *ngFor="let areaDept of areaDepts" [value]="areaDept.value">
-          {{areaDept.label}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>-->
-          <ng-select2 style="margin-right: 15px; font-size: large; "
-                      [data]="_areaDeptList"
-                      formControlName="areaDept"
-                      [options]="options1">
-          </ng-select2>
+        <div class="form__column" fxFlex="0 0 350px" fxLayout="column">
+          <div class="mat-form-field__block">
+            <mat-form-field class="mat-form-field" appearance="outline">
+              <label class="mat-form-field__lable--top">{{'User.areaDept' | translate}}</label>
+              <input type="text"
+                     placeholder="選擇院區與科別"
+                     aria-label="area dept"
+                     matInput
+                     formControlName="areaDept"
+                     [matAutocomplete]="auto">
+              <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                <mat-option *ngFor="let option of filteredAreaDeptOptions | async" [value]="option.id">
+                  {{option.text}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
         </div>
+
         <div class="form__column" fxFlex="0 0 auto" fxLayout="column">
-          <label class="form__label">{{'History.doctorInCharge' | translate}}</label>
-          <!--<mat-form-field appearance="outline">
-      <input matInput type="text" formControlName="doctorNo" />
-    </mat-form-field>-->
-          <ng-select2 style="margin-right: 15px; font-size: large; "
-                      [data]="_doctorList2"
-                      formControlName="doctorNo"
-                      [options]="options2">
-          </ng-select2>
+          <div class="mat-form-field__block">
+            <mat-form-field class="mat-form-field" appearance="outline">
+              <label class="mat-form-field__lable--top">診別</label>
+              <mat-select formControlName="divNo">
+                <mat-option [value]="-1">未選擇</mat-option>
+                <mat-option *ngFor="let option of divNoList" [value]="option.id">{{ option.text }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
         </div>
+
         <div class="form__column" fxFlex="0 0 195px" fxLayout="column">
           <label class="form__label">{{'History.ptNO' | translate}}</label>
           <mat-form-field appearance="outline">
@@ -77,13 +79,23 @@
             <input matInput type="text" formControlName="ptIDNO">
           </mat-form-field>
         </div>
-        <div class="form__column" fxFlex="0 0 328px" fxLayout="column">
+        <div class="form__column" fxFlex="0 0 195px" fxLayout="column">
+          <div class="mat-form-field__block">
+            <mat-form-field class="mat-form-field" appearance="outline">
+              <label class="mat-form-field__lable--top">同意書名稱</label>
+              <input matInput type="text" formControlName="templateName" placeholder="同意書模糊搜尋">
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="form__column" fxFlex="0 0 150px" fxLayout="column">
           <label class="form__label">{{'general.status' | translate}}</label>
           <mat-form-field appearance="outline">
             <mat-select formControlName="status">
               <mat-option *ngFor="let signRole of (signRoles$ | async)" [value]="signRole.signRoleName">
                 {{'1zSIGN.waitSign' | translate: {signRole: signRole.signRoleName} }}
               </mat-option>
+              <mat-option [value]="'N_3'">{{'1zSIGN.signStatus.3' | translate}}</mat-option>
               <mat-option [value]="1">{{'1zSIGN.status.1' | translate}}</mat-option>
               <mat-option [value]="3">{{'1zSIGN.status.3' | translate}}</mat-option>
               <mat-option [value]="-1">{{'1zSIGN.status.-1' | translate}}</mat-option>
