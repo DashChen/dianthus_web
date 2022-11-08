@@ -153,6 +153,7 @@
                      placeholder="請選擇醫生"
                      aria-label="Number"
                      matInput
+                     #doctorInput
                      [ngModel]="choiceDoctor"
                      (ngModelChange)="changeDocotr($event)"
                      [matAutocomplete]="autoDoctor">
@@ -161,6 +162,9 @@
                   {{option.text}}
                 </mat-option>
               </mat-autocomplete>
+              <button type="button" mat-button *ngIf="showChoiceDoctorClearBtn" matSuffix mat-icon-button aria-label="Clear" (click)="clearDoctor(doctorInput)">
+                <mat-icon>close</mat-icon>
+              </button>
             </mat-form-field>
           </div>
 
@@ -186,6 +190,7 @@
                      placeholder="請選擇院所 / 科別"
                      aria-label="area dept"
                      matInput
+                     #hospitalInput
                      [ngModel]="choiceHospital"
                      (ngModelChange)="changeAreaDept($event)"
                      [matAutocomplete]="autoAreaDept">
@@ -194,6 +199,9 @@
                   {{option.text}}
                 </mat-option>
               </mat-autocomplete>
+              <button type="button" mat-button *ngIf="showChoiceHospitalClearBtn" matSuffix mat-icon-button aria-label="Clear" (click)="clearHospital(hospitalInput)">
+                <mat-icon>close</mat-icon>
+              </button>
             </mat-form-field>
           </div>
         </div>

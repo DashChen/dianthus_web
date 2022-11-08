@@ -39,8 +39,10 @@ export class CreateWsNewComponent implements OnInit {
   date1: string = "";
   choiceClass: string = "0";
   choiceDoctor: string = "";
+  showChoiceDoctorClearBtn: boolean = false;
 
   choiceHospital: string = "";
+  showChoiceHospitalClearBtn: boolean = false;
   keyword: string = "";
 
   clinicData: ClinicData = new ClinicData();
@@ -78,10 +80,19 @@ export class CreateWsNewComponent implements OnInit {
   _filterAreaDept(value: string): Select2OptionData[] {
     // console.log('_filterAreaDept', value);
     if (value.trim().length === 0) {
+      this.showChoiceHospitalClearBtn = false;
       return this._areaDeptList;
     }
+    this.showChoiceHospitalClearBtn = true;
     return this._areaDeptList.filter(option => option.text.includes(value));
   }
+
+  clearHospital(inputEl: HTMLInputElement) {
+    inputEl.value = '';
+    this.choiceHospital = '';
+    this.changeAreaDept(this.choiceHospital);
+  }
+
   workstageSignKey: string = '';
 
 
@@ -90,15 +101,24 @@ export class CreateWsNewComponent implements OnInit {
   filteredDoctorOptions: Observable<Select2OptionData[]> = new Observable<Select2OptionData[]>();
   doctor$ = new Subject<string>();
   changeDocotr(value: string) {
-    this.doctor$.next(value);
+    this.choiceDoctor = value || '';
+    this.doctor$.next(this.choiceDoctor);
   }
 
   _filterDoctor(value: string): Select2OptionData[] {
-    console.log('_filterDoctor', value);
+    // console.log('_filterDoctor', value);
     if (value.trim().length === 0) {
+      this.showChoiceDoctorClearBtn = false;
       return this._doctorList2;
     }
+    this.showChoiceDoctorClearBtn = true;
     return this._doctorList2.filter(option => option.text.includes(value));
+  }
+
+  clearDoctor(inputEl: HTMLInputElement) {
+    inputEl.value = '';
+    this.choiceDoctor = '';
+    this.changeDocotr(this.choiceDoctor);
   }
 
   options: Options = {
@@ -121,7 +141,7 @@ export class CreateWsNewComponent implements OnInit {
   selectedDivNo: string = '0';
 
   selectDivNo(event: Event) {
-    console.log('selectDivNo', event);
+    // console.log('selectDivNo', event);
     this.selectedDivNo = (event.target as HTMLSelectElement).value;
   }
 
@@ -302,7 +322,7 @@ export class CreateWsNewComponent implements OnInit {
             this.clinicData.patient = result.data.patient;
             this.clinicData.patientId = result.data.patientId;
             this.clinicData.patientPhone = result.data.patientPhone;
-
+            result.data.clinicList = [];
             for (let i = 0; i < result.data.clinicList.length; i++) {
               this.clinicData.clinicList.push({
                 checked: i == 0 ? true : false,
@@ -472,7 +492,17 @@ export class CreateWsNewComponent implements OnInit {
   changeAllChoice() {
     // 改為當前頁面
     for (let i = (this.pageIndex * this.pageSize); i < ((this.pageIndex + 1) * this.pageSize); i++) {
-      this.consentList[i].checked = this.isAllChoice;
+      if (this.consentList[i]) {
+        this.consentList[i].checked = this.isAllChoice;
+        if (this.isAllChoice) {
+          this.checkedConsetList.push(this.consentList[i]);
+        } else {
+          const index = this.checkedConsetList.findIndex(_item => _item.templateUid === this.consentList[i].templateUid);
+          if (index > -1) {
+            this.checkedConsetList.splice(index, 1);
+          }
+        }
+      }
     }
   }
 
@@ -587,8 +617,7 @@ export class CreateWsNewComponent implements OnInit {
     let docName = "";
     if (this.clinicData.clinicList.length > 0) {
       docName = this.clinicData.clinicList.filter(x => x.checked == true)[0].doctorName;
-    }
-    else {
+    } else {
       docName = this.choiceDoctor;
     }
 
@@ -620,6 +649,7 @@ export class CreateWsNewComponent implements OnInit {
 
 
     if (!docName) {
+      // console.log(docName, this.choiceDoctor);
       alert("請填寫看診資料");
       return;
     }

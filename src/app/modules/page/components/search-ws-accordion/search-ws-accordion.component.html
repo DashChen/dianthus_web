@@ -51,6 +51,9 @@
                   {{option.text}}
                 </mat-option>
               </mat-autocomplete>
+              <button type="button" mat-button *ngIf="this.searchForm.controls['areaDept'].value" matSuffix mat-icon-button aria-label="Clear" (click)="this.searchForm.controls['areaDept'].setValue('')">
+                <mat-icon>close</mat-icon>
+              </button>
             </mat-form-field>
           </div>
         </div>
