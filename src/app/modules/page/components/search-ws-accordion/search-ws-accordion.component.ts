@@ -92,7 +92,7 @@ export class SearchWsAccordionComponent implements OnInit {
       doctorNo: [" "],
       ptNO: [],
       ptIDNO: [],
-      divNo: '0',
+      divNo: -1,
       templateName: '',
       status: [WsStatus.ALL]
     });
@@ -252,30 +252,33 @@ export class SearchWsAccordionComponent implements OnInit {
     let updateObj = {};
 
     switch (status) {
+      // 已核准
       case WsStatus.FINISHED:
         updateObj = {
           processState: '1,2,3,4',
           state: WsStatus.FINISHED + ''
         }
         break;
+      // 待歸檔
       case WsStatus.TO_BE_STORE:
         updateObj = {
           processState: '1,2,3,4',
           state: WsStatus.TO_BE_STORE + ''
         }
         break;
+      // 待核准
+      case 'N_3':
+        updateObj = {
+          processState: '3',
+          state: WsStatus.NORMAL + ''
+        }
+        break;
       default:
-        if (status !== WsStatus.FINISHED && status !== -1) {
-          if (Number.isInteger(status)) {
-            updateObj = {
-              signRoleName: status,
-              processState: '1,2'
-            }
-          } else {
-            updateObj = {
-              processState: '3',
-              state: WsStatus.NORMAL + ''
-            }
+        // 不拘以外，是透過 動態 signRoleName
+        if (status !== -1) {
+          updateObj = {
+            signRoleName: status,
+            processState: '1,2'
           }
         }
     }
@@ -298,7 +301,8 @@ export class SearchWsAccordionComponent implements OnInit {
       });
     }
     // 診別
-    if (this.searchForm.value['divNo'] !== '-1') {
+    if (this.searchForm.value['divNo'] != -1) {
+      console.log(this.searchForm.value);
       const Div_No_Name = this.divNoList.find(_item => _item.id === this.searchForm.value['divNo'])?.text;
       temp.updatePartical({
         Div_No_Name: Div_No_Name,

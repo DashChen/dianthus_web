@@ -63,7 +63,7 @@
             <mat-form-field class="mat-form-field" appearance="outline">
               <label class="mat-form-field__lable--top">診別</label>
               <mat-select formControlName="divNo">
-                <mat-option [value]="-1">未選擇</mat-option>
+                <mat-option [value]="-1">不拘</mat-option>
                 <mat-option *ngFor="let option of divNoList" [value]="option.id">{{ option.text }}</mat-option>
               </mat-select>
             </mat-form-field>

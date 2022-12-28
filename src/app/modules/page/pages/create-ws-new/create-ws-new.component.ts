@@ -322,7 +322,7 @@ export class CreateWsNewComponent implements OnInit {
             this.clinicData.patient = result.data.patient;
             this.clinicData.patientId = result.data.patientId;
             this.clinicData.patientPhone = result.data.patientPhone;
-            result.data.clinicList = [];
+
             for (let i = 0; i < result.data.clinicList.length; i++) {
               this.clinicData.clinicList.push({
                 checked: i == 0 ? true : false,
